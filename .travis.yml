@@ -10,6 +10,7 @@ cache:
 
 before_install:
 - bash .util/build_xatkit.sh
+- bash .util/build_chat-platform.sh
 
 script:
 - mvn install
