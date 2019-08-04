@@ -14,23 +14,27 @@
 
     <packaging>pom</packaging>
 
-    <build>
+    <profiles>
+        <profile>
+            <id>build-product</id>
+            <build>
 
-        <plugins>
+                <plugins>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <finalName>react-platform</finalName>
-                    <descriptors>
-                        <descriptor>zip.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <finalName>react-platform</finalName>
+                            <descriptors>
+                                <descriptor>zip.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </plugin>
 
-        </plugins>
-    </build>
-
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
