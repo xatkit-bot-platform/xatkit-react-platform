@@ -1,4 +1,4 @@
-React Platform
+Xatkit React Platform
 =====
 
 [![License Badge](https://img.shields.io/badge/license-EPL%202.0-brightgreen.svg)](https://opensource.org/licenses/EPL-2.0)
