@@ -2,6 +2,7 @@ package com.xatkit.plugins.react.platform.io;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.xatkit.core.platform.io.IntentRecognitionHelper;
 import com.xatkit.core.platform.io.JsonWebhookEventProvider;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.intent.RecognizedIntent;
@@ -63,7 +64,8 @@ class ReactWebhook extends JsonWebhookEventProvider<ReactPlatform> {
             if (nonNull(message)) {
                 String textMessage = message.getAsString();
                 XatkitSession session = runtimePlatform.createSessionFromChannel(channel);
-                RecognizedIntent recognizedIntent = baseProvider.getRecognizedIntent(textMessage, session);
+                RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(textMessage, session,
+                        xatkitCore);
                 session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
                         ReactUtils.CHAT_USERNAME_CONTEXT_KEY, username);
                 session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
