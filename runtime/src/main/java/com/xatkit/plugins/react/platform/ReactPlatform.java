@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.xatkit.core.XatkitCore;
+import com.xatkit.core.server.RestHandlerFactory;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
 import com.xatkit.plugins.react.platform.action.PostMessage;
@@ -80,7 +81,7 @@ public class ReactPlatform extends ChatPlatform {
          * defining the channel field.
          */
         this.getXatkitCore().getXatkitServer().registerRestEndpoint("/react/getAnswers",
-                (headers, param, content) -> {
+                RestHandlerFactory.createJsonRestHandler((headers, param, content) -> {
                     JsonObject contentObject = content.getAsJsonObject();
                     String channel = contentObject.get("channel").getAsString();
                     Queue<String> messageQueue = this.getMessagesFor(channel);
@@ -102,7 +103,7 @@ public class ReactPlatform extends ChatPlatform {
                         message = messageQueue.poll();
                     }
                     return result;
-                });
+                }));
     }
 
     /**

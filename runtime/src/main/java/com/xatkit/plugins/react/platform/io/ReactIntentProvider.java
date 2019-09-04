@@ -1,34 +1,21 @@
 package com.xatkit.plugins.react.platform.io;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.xatkit.core.platform.io.IntentRecognitionHelper;
-import com.xatkit.core.platform.io.JsonWebhookEventProvider;
-import com.xatkit.core.session.XatkitSession;
+import com.xatkit.core.server.JsonRestHandler;
 import com.xatkit.intent.RecognizedIntent;
-import com.xatkit.plugins.chat.ChatUtils;
-import com.xatkit.plugins.chat.platform.io.JsonWebhookChatIntentProvider;
+import com.xatkit.plugins.chat.platform.io.WebhookChatIntentProvider;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import com.xatkit.plugins.react.platform.ReactUtils;
-import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.http.Header;
-
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.Objects.nonNull;
 
 /**
- * A {@link JsonWebhookEventProvider} that receives xatkit-react messages and convert them into
+ * A {@link WebhookChatIntentProvider} that receives xatkit-react messages and convert them into
  * {@link RecognizedIntent}.
  * <p>
  * This class should not be initialized reflexively by the core framework: it is created by the
  * {@link ReactIntentProvider} to receive messages and convert them to {@link RecognizedIntent}.
  */
-class ReactIntentProvider extends JsonWebhookChatIntentProvider<ReactPlatform> {
+class ReactIntentProvider extends WebhookChatIntentProvider<ReactPlatform, JsonRestHandler> {
 
-    private static final String XATKIT_REACT_HEADER = "xatkit-react";
+    private static final String ENDPOINT_URI = "/react";
 
     /**
      * Construct a new {@link ReactIntentProvider} from the provided {@code runtimePlatform} and {@code configuration}.
@@ -41,72 +28,13 @@ class ReactIntentProvider extends JsonWebhookChatIntentProvider<ReactPlatform> {
     }
 
     @Override
-    public List<String> getAccessControlAllowHeaders() {
-        return Collections.singletonList(XATKIT_REACT_HEADER);
+    public String getEndpointURI() {
+        return ENDPOINT_URI;
     }
 
     @Override
-    protected void handleParsedContent(JsonElement parsedContent, Header[] headers) {
-        if (containsXatkitReact(headers)) {
-            JsonObject content = parsedContent.getAsJsonObject();
-            String username = content.get("username").getAsString();
-            String channel = content.get("channel").getAsString();
-            JsonElement message = content.get("message");
-            if (nonNull(message)) {
-                String textMessage = message.getAsString();
-                XatkitSession session = runtimePlatform.createSessionFromChannel(channel);
-                RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(textMessage, session,
-                        xatkitCore);
-                session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                        ReactUtils.CHAT_USERNAME_CONTEXT_KEY, username);
-                session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                        ReactUtils.CHAT_CHANNEL_CONTEXT_KEY, channel);
-                session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                        ReactUtils.CHAT_RAW_MESSAGE_CONTEXT_KEY, textMessage);
-                /*
-                 * This provider extends ChatIntentProvider, and must set chat-related context values.
-                 */
-                session.getRuntimeContexts().setContextValue(ChatUtils.CHAT_CONTEXT_KEY, 1,
-                        ChatUtils.CHAT_USERNAME_CONTEXT_KEY, username);
-                session.getRuntimeContexts().setContextValue(ChatUtils.CHAT_CONTEXT_KEY, 1,
-                        ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, channel);
-                session.getRuntimeContexts().setContextValue(ChatUtils.CHAT_CONTEXT_KEY, 1,
-                        ChatUtils.CHAT_RAW_MESSAGE_CONTEXT_KEY, textMessage);
-                /*
-                 * Use the base provider sendEventInstance method to ensure that the chat context are checked.
-                 */
-                this.sendEventInstance(recognizedIntent, session);
-            }
-            Log.info("Received a message from user {0} (channel {1}): {2}", username, channel, message);
-        } else {
-            Log.error("Does not contain Xatkit REACt header");
-        }
+    protected JsonRestHandler createRestHandler() {
+        return new ReactRestHandler(this);
     }
 
-    @Override
-    public void run() {
-        synchronized (this) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-
-            }
-        }
-    }
-
-    /**
-     * Checks if the provided {@link Header}s contain the XATKIT_REACT_HEADER.
-     *
-     * @param headers the {@link Header}s to check
-     * @return {@code true} if the provided {@code headers} contain the XATKIT_REACT_HEADER, {@code false} otherwise
-     */
-    private boolean containsXatkitReact(Header[] headers) {
-        for (int i = 0; i < headers.length; i++) {
-            Header h = headers[i];
-            if (h.getName().equals(XATKIT_REACT_HEADER)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
