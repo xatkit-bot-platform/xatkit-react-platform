@@ -12,7 +12,20 @@
 
     <artifactId>react-platform-runtime</artifactId>
 
+    <properties>
+        <netty-socketio.version>1.7.17</netty-socketio.version>
+        <junit.version>4.12</junit.version>
+        <assertj.version>3.10.0</assertj.version>
+    </properties>
+
     <dependencies>
+
+        <!-- socket.io server -->
+
+        <dependency>
+            <groupId>com.corundumstudio.socketio</groupId>
+            <artifactId>netty-socketio</artifactId>
+        </dependency>
 
         <!-- Xatkit Internal -->
 
@@ -30,7 +43,57 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.xatkit</groupId>
+            <artifactId>core</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Tests -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- socket.io server -->
+
+            <dependency>
+                <groupId>com.corundumstudio.socketio</groupId>
+                <artifactId>netty-socketio</artifactId>
+                <version>${netty-socketio.version}</version>
+            </dependency>
+
+            <!-- Tests -->
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
     <profiles>
         <profile>
