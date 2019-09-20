@@ -1,11 +1,11 @@
 package com.xatkit.plugins.react.platform.action;
 
 import com.xatkit.core.platform.action.RuntimeMessageAction;
-import com.xatkit.core.session.XatkitSession;
 import com.xatkit.core.session.RuntimeContexts;
+import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import com.xatkit.plugins.react.platform.ReactUtils;
+import com.xatkit.plugins.react.platform.utils.ReactUtils;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;

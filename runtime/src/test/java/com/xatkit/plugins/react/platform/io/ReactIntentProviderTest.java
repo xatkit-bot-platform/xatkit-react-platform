@@ -11,13 +11,13 @@ import org.junit.Test;
 
 import static java.util.Objects.nonNull;
 
-public class ReactSocketIntentProviderTest extends XatkitTest {
+public class ReactIntentProviderTest extends XatkitTest {
 
     private static XatkitCore xatkitCore;
 
     private static ReactPlatform reactPlatform;
 
-    private ReactSocketIntentProvider reactSocketIntentProvider;
+    private ReactIntentProvider reactIntentProvider;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -27,21 +27,14 @@ public class ReactSocketIntentProviderTest extends XatkitTest {
 
     @After
     public void tearDown() {
-        if(nonNull(reactSocketIntentProvider)) {
-            reactSocketIntentProvider.close();
+        if(nonNull(reactIntentProvider)) {
+            reactIntentProvider.close();
         }
     }
 
     @Test(expected = NullPointerException.class)
     public void constructNullPlatform() {
-        reactSocketIntentProvider = new ReactSocketIntentProvider(null, new BaseConfiguration());
-    }
-
-    @Test
-    public void startTest() throws InterruptedException {
-        reactSocketIntentProvider = new ReactSocketIntentProvider(reactPlatform, new BaseConfiguration());
-        reactSocketIntentProvider.run();
-        Thread.sleep(Integer.MAX_VALUE);
+        reactIntentProvider = new ReactIntentProvider(null, new BaseConfiguration());
     }
 
 }
