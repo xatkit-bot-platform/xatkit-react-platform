@@ -3,6 +3,10 @@ package com.xatkit.plugins.react.platform.action;
 import com.xatkit.core.platform.action.RuntimeMessageAction;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.react.platform.ReactPlatform;
+import com.xatkit.plugins.react.platform.utils.MessageObject;
+import com.xatkit.plugins.react.platform.utils.SocketEventTypes;
+
+import java.util.UUID;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
@@ -38,14 +42,14 @@ public class PostMessage extends RuntimeMessageAction<ReactPlatform> {
     /**
      * Posts the provided {@code message} to the given {@code channel}.
      * <p>
-     * Posted messages are available through the {@code /react/getAnswer} REST endpoint, and are not pushed directly
-     * to the client application.
+     * Posted messages are pushed to the client application using the underlying socket server.
      *
      * @return {@code null}
      */
     @Override
     protected Object compute() {
-        this.runtimePlatform.storeMessage(channel, message);
+        this.runtimePlatform.getSocketIOServer().getClient(UUID.fromString(channel)).
+                sendEvent(SocketEventTypes.BOT_MESSAGE.label, new MessageObject(message, "xatkit"));
         return null;
     }
 
