@@ -23,4 +23,7 @@ actions {
 	ItemizeList(list, formatter)
 	EnumerateList(list)
 	EnumerateList(list, formatter)
+	
+	ReplyFileMessage(file)
+	ReplyFileMessage(message, file)
 }

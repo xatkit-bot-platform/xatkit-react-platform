@@ -32,6 +32,13 @@
     <parameters key="list"/>
     <parameters key="formatter"/>
   </actions>
+  <actions name="ReplyFileMessage">
+    <parameters key="file"/>
+  </actions>
+  <actions name="ReplyFileMessage">
+    <parameters key="message"/>
+    <parameters key="file"/>
+  </actions>
   <actions name="PostMessage">
     <parameters key="message"/>
     <parameters key="channel"/>

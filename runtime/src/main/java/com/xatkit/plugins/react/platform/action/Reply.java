@@ -11,8 +11,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A {@link RuntimeMessageAction} that replies to a message using the input
- * xatkit-react channel.
+ * A {@link RuntimeMessageAction} that replies to a message using the input xatkit-react channel.
  * <p>
  * This action relies on the provided {@link XatkitSession} to retrieve the xatkit-react {@code channel} associated
  * to the user input.
