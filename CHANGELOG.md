@@ -15,7 +15,7 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 ### Changed
 
 - `ReactIntentProvider` and `ChatProvider` now use the new intent provider hierarchy (see [xatkit-runtime/#221](https://github.com/xatkit-bot-platform/xatkit-runtime/issues/221)).
-- React platform's intent providers and actions now use [socket.io](https://socket.io/) to receive messages and reply in real-time. This change breaks the public API: the REST endpoint `/react/getAnswers` doesn't exist anymore, and messages must be passed as JSON objects through the socket).
+- React platform's intent providers and actions now use [socket.io](https://socket.io/) to receive messages and reply in real-time. **This change breaks the public API**: the REST endpoint `/react/getAnswers` doesn't exist anymore, and messages must be passed as JSON objects through the socket).
 
 ## [2.0.0] - 2019-08-20 
 
