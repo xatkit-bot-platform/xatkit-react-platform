@@ -8,6 +8,8 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 
 ## Unreleased
 
+## [3.0.0]- 2019-10-10
+
 ### Added
 
 - Actions `ReplyFileMessage(file)` and `ReplyFileMessage(file, message)` to post messages containing file through the react component. These actions upload the provided file on Xatkit's public directory (see [this commit on xatkit-runtime](https://github.com/xatkit-bot-platform/xatkit-runtime/commit/cdb0521320e2606a4ae3a5e4c12618ad018afaf8)). If the file is an image (`.gif`, `.jpg`, or `.png`) the react component prints a clickable thumbnail of the image, otherwise a link is created to open the file or download it.
