@@ -15,7 +15,7 @@ The React platform defines the following providers:
 
 | Provider                   | Type  | Context Parameters | Description                                                  |
 | -------------------------- | ----- | ------------------ | ------------------------------------------------------------ |
-| ChatProvider | Intent | - `chat.channel`: the identifier of the channel that sent the message<br/> - `chat.username`: the name of the user that sent the message<br/> - `chat.rawMessage`: the raw message sent by the user (before NLP processing) | Receove messages from a communication channel and translate them into Xatkit-compatible intents (*inherited from [ChatPlatform](https://github.com/xatkit-bot-platform/xatkit-chat-platform)*) |
+| ChatProvider | Intent | - `chat.channel`: the identifier of the channel that sent the message<br/> - `chat.username`: the name of the user that sent the message<br/> - `chat.rawMessage`: the raw message sent by the user (before NLP processing) | Receive messages from a communication channel and translate them into Xatkit-compatible intents (*inherited from [ChatPlatform](https://github.com/xatkit-bot-platform/xatkit-chat-platform)*) |
 | ReactIntentProvider | Intent | - `react.channel`: the identifier of the react channel that sent the message<br/> - `react.username`: the name of the react user that sent the message<br/> - `react.rawMessage`: the raw message sent by the user (before NLP processing)<br/> | Receive messages from the react component and translates them into Xatkit-compatible intents. Note that `react.channel`, `react.username`, and `react.rawMessage` contain the same values as `chat.channel`, `chat.username`, and `chat.rawMessage` |
 
 ## Actions
