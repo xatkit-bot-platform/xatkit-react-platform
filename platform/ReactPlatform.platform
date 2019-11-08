@@ -15,15 +15,15 @@ providers {
 }
 
 actions {
-	Reply(message)
+	Reply(message : String)
 	
 	// Formatting actions
 	// These actions do not perform operations on the React client, but return Strings that can be displayed as messages.
-	ItemizeList(list)
-	ItemizeList(list, formatter)
-	EnumerateList(list)
-	EnumerateList(list, formatter)
+	ItemizeList(list : java.util.List<?>)
+	ItemizeList(list : java.util.List<?>, formatter : String)
+	EnumerateList(list : java.util.List<?>)
+	EnumerateList(list : java.util.List<?>, formatter : String)
 	
-	ReplyFileMessage(file)
-	ReplyFileMessage(message, file)
+	ReplyFileMessage(file : java.io.File)
+	ReplyFileMessage(message : String, file : java.io.File)
 }

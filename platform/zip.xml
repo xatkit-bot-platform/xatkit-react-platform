@@ -9,9 +9,6 @@
     </formats>
     <files>
         <file>
-            <source>ReactPlatform.xmi</source>
-        </file>
-        <file>
             <source>ReactPlatform.platform</source>
         </file>
     </files>
