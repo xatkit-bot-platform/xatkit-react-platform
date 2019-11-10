@@ -31,7 +31,12 @@ The React platform defines the following providers:
 
 ## Options
 
-The log platform does not support any configuration option.
+The React platform supports the following configuration options
+
+| Key                       | Values  | Description                                                  | Constraint                                                   |
+| ------------------------- | ------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `xatkit.react.client.url` | String  | The base URL of the website displaying the react chat component. Supports wildcard (`"*"`) to allow any domain. | **Optional** (default to `<xatkit.server.public_url>:<xatkit.server.port>`) |
+| `xatkit.react.port`       | Integer | The port used to start the socket server used by the React platform. | **Optional** (default `5001`)                                |
 
 **Note**: if the react platform is used as a concrete implementation of the [*ChatPlatform*](https://github.com/xatkit-bot-platform/xatkit-chat-platform) the following property must be set in the Xatkit configuration:
 

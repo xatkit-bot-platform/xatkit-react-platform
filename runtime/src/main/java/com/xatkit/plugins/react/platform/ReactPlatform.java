@@ -37,8 +37,11 @@ public class ReactPlatform extends ChatPlatform {
     /**
      * Constructs a new {@link ReactPlatform} from the provided {@link XatkitCore} and {@link Configuration}.
      * <p>
-     * This constructor initializes the underlying socket server using the port specified in the provided
-     * {@link Configuration}.
+     * This constructor initializes the underlying socket server using the {@link ReactUtils#REACT_CLIENT_URL_KEY}
+     * property specified in the {@link Configuration}. If this property is not specified the {@link ReactPlatform}
+     * assumes that the page embedding the react client is served by the Xatkit server and initializes the socket
+     * server with the {@link XatkitServerUtils#SERVER_PUBLIC_URL_KEY} and {@link XatkitServerUtils#SERVER_PORT_KEY}
+     * properties.
      *
      * @param xatkitCore    the {@link XatkitCore} instance associated to this runtimePlatform
      * @param configuration the platform's {@link Configuration} containing the port of the socket server
@@ -48,17 +51,38 @@ public class ReactPlatform extends ChatPlatform {
         super(xatkitCore, configuration);
         int socketServerPort = configuration.getInt(ReactUtils.REACT_SERVER_PORT_KEY,
                 ReactUtils.DEFAULT_REACT_SERVER_PORT);
-        String originLocation = configuration.getString(XatkitServerUtils.SERVER_PUBLIC_URL_KEY,
-                XatkitServerUtils.DEFAULT_SERVER_LOCATION);
-        int originPort = configuration.getInt(XatkitServerUtils.SERVER_PORT_KEY,
-                XatkitServerUtils.DEFAULT_SERVER_PORT);
-        String origin = originLocation + ":" + Integer.toString(originPort);
+        String origin;
+        if (configuration.containsKey(ReactUtils.REACT_CLIENT_URL_KEY)) {
+            /*
+             * The configuration contains a client URL value, we can directly use it to setup the origin of the
+             * socket server.
+             */
+            String configurationOrigin = configuration.getString(ReactUtils.REACT_CLIENT_URL_KEY);
+            if(configurationOrigin.equals("*")) {
+                /*
+                 * We need to set the origin to null otherwise the Access-Control-Allow-Credentials header is set to
+                 * true and the browser will deny access to the resource. This is a workaround for a non-intuitive
+                 * behavior in netty-socketio, see this issue for more information: https://github
+                 * .com/mrniko/netty-socketio/issues/400.
+                 */
+                origin = null;
+            } else {
+                origin = configuration.getString(ReactUtils.REACT_CLIENT_URL_KEY);
+            }
+        } else {
+            /*
+             * The configuration doesn't contain a client URL value, we can assume that the page embedding the react
+             * client is served by the Xatkit server, and use the server's URL and port values from the configuration.
+             */
+            String originURL = configuration.getString(XatkitServerUtils.SERVER_PUBLIC_URL_KEY,
+                    XatkitServerUtils.DEFAULT_SERVER_LOCATION);
+            int originPort = configuration.getInt(XatkitServerUtils.SERVER_PORT_KEY,
+                    XatkitServerUtils.DEFAULT_SERVER_PORT);
+            origin = originURL + ":" + Integer.toString(originPort);
+        }
+
         com.corundumstudio.socketio.Configuration socketioConfiguration =
                 new com.corundumstudio.socketio.Configuration();
-        /*
-         * TODO Doesn't seem to be needed for the moment, needs to be tested when deployed on a server.
-         */
-//        socketioConfiguration.setHostname("localhost");
         socketioConfiguration.setPort(socketServerPort);
         /*
          * The URL where the chatbox is displayed. Setting this is required to avoid CORS issues.
