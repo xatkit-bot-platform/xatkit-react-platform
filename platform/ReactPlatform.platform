@@ -12,6 +12,22 @@ providers {
 			sets parameter rawMessage
 		}
 	}
+	event ReactEventProvider {
+		event Client_Ready 
+		creates context react with lifespan 1 {
+			/*
+			 * Sets the channel parameter to allow Reply actions as response.
+			 */
+			sets parameter channel
+		}
+		event Client_Closed
+		creates context react with lifespan 1 {
+			/*
+			 * Sets the channel parameter to allow Reply actions as response.
+			 */
+			sets parameter channel
+		}
+	}
 }
 
 actions {

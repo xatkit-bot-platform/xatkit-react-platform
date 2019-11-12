@@ -17,6 +17,14 @@ The React platform defines the following providers:
 | -------------------------- | ----- | ------------------ | ------------------------------------------------------------ |
 | ChatProvider | Intent | - `chat.channel`: the identifier of the channel that sent the message<br/> - `chat.username`: the name of the user that sent the message<br/> - `chat.rawMessage`: the raw message sent by the user (before NLP processing) | Receive messages from a communication channel and translate them into Xatkit-compatible intents (*inherited from [ChatPlatform](https://github.com/xatkit-bot-platform/xatkit-chat-platform)*) |
 | ReactIntentProvider | Intent | - `react.channel`: the identifier of the react channel that sent the message<br/> - `react.username`: the name of the react user that sent the message<br/> - `react.rawMessage`: the raw message sent by the user (before NLP processing)<br/> | Receive messages from the react component and translates them into Xatkit-compatible intents. Note that `react.channel`, `react.username`, and `react.rawMessage` contain the same values as `chat.channel`, `chat.username`, and `chat.rawMessage` |
+| ReactEventProvider | Event | - | Receive non-textual events from the react component and translates them into Xatkit-compatible events. |
+
+### ReactEventProvider Events
+
+| Event         | Context | Parameters                                                   | Description                                                  |
+| ------------- | ------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Client_Ready  | `react` | - `channel` (**String**): the identifier of the react channel associated to the new client | Event sent when a new react client connects to the Xatkit. **Note**: this event sets the context parameter `react.channel`, allowing to use a `Reply` action to post a message in response. |
+| Client_Closed | `react` | - `channel` (**String**): the identifier of the react channel associated to the closed client | Event sent when a react client disconnects from Xatkit. **Note**: this event sets the context parameter `react.channel`, but **does not ensure that a `Reply` action invocation as a response to this event will be successful**. |
 
 ## Actions
 

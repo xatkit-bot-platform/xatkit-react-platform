@@ -11,6 +11,7 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 ### Added
 
 - Configuration property `xatkit.react.client.url` to specify the URL of client domains embedding the react chat component.  This property is translated into a `Access-Control-Allow-Origin` header that tells the browser to authorize requests from the specified domain. Supported values for the property are single URL and wildcard (`"*"`). The standard does not authorize multiple URLs in the `Access-Control-Allow-Origin` header (see [here]( https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin )).
+- `ReactEventProvider` that fires non-textual events related to the react client. The provider currently provides two events: `Client_Ready` and `Client_Closed`, that are triggered when a new client connects to/disconnects from Xatkit. These events set context parameters allowing to use the `Reply` action as a response. See the [wiki]( https://github.com/xatkit-bot-platform/xatkit-releases/wiki/Xatkit-React-Platform#reacteventprovider-events) for more information.
 
 ## [3.0.0]- 2019-10-10
 
