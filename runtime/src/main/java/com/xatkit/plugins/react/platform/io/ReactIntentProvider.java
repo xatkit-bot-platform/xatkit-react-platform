@@ -19,17 +19,17 @@ import org.apache.commons.configuration2.Configuration;
 public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
 
     /**
-     * Constructs a {@link ReactIntentProvider} from the provided {@code runtimePlatform} and {@code configuration}.
+     * Constructs a {@link ReactIntentProvider} from the provided {@code reactPlatform} and {@code configuration}.
      * <p>
      * This constructor registers a dedicated listener to the socket server that receives user messages and
      * translates them into {@link RecognizedIntent}s using the {@link IntentRecognitionHelper}.
      *
-     * @param runtimePlatform the {@link ReactPlatform} containing this provider
+     * @param reactPlatform the {@link ReactPlatform} containing this provider
      * @param configuration   the platform's {@link Configuration}
      * @see IntentRecognitionHelper
      */
-    public ReactIntentProvider(ReactPlatform runtimePlatform, Configuration configuration) {
-        super(runtimePlatform, configuration);
+    public ReactIntentProvider(ReactPlatform reactPlatform, Configuration configuration) {
+        super(reactPlatform, configuration);
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_MESSAGE.label,
                 MessageObject.class, (socketIOClient, messageObject, ackRequest) -> {
                     Log.info("Received message {0}", messageObject.getMessage());
@@ -59,10 +59,13 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                 });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void run() {
         /*
-         * Do nothing the socket server is started asynchronously.
+         * Do nothing, the socket server is started asynchronously.
          */
     }
 }
