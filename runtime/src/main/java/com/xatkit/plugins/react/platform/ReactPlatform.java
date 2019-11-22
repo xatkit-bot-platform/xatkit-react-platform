@@ -1,5 +1,6 @@
 package com.xatkit.plugins.react.platform;
 
+import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.xatkit.core.XatkitCore;
 import com.xatkit.core.server.XatkitServerUtils;
@@ -10,6 +11,8 @@ import com.xatkit.plugins.react.platform.action.Reply;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
+
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link ChatPlatform} class that interacts with the
@@ -49,6 +52,10 @@ public class ReactPlatform extends ChatPlatform {
      */
     public ReactPlatform(XatkitCore xatkitCore, Configuration configuration) {
         super(xatkitCore, configuration);
+        /*
+         * Register the shutdown hook first to make sure it is registered even if the constructor throws an exception.
+         */
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
         int socketServerPort = configuration.getInt(ReactUtils.REACT_SERVER_PORT_KEY,
                 ReactUtils.DEFAULT_REACT_SERVER_PORT);
         String origin;
@@ -94,6 +101,14 @@ public class ReactPlatform extends ChatPlatform {
          * .com/mrniko/netty-socketio/issues/617).
          */
         socketioConfiguration.setRandomSession(true);
+
+        /*
+         * Allow address reuses. This allows to restart Xatkit and reuse the same port without binding errors.
+         */
+        SocketConfig socketConfig = new SocketConfig();
+        socketConfig.setReuseAddress(true);
+        socketioConfiguration.setSocketConfig(socketConfig);
+
         socketIOServer = new SocketIOServer(socketioConfiguration);
         socketIOServer.addConnectListener(socketIOClient -> Log.info("Connected"));
         socketIOServer.addDisconnectListener(socketIOClient -> Log.info("Disconnected"));
@@ -114,7 +129,11 @@ public class ReactPlatform extends ChatPlatform {
      */
     @Override
     public void shutdown() {
-        this.socketIOServer.stop();
+        if(nonNull(socketIOServer)) {
+            Log.info("Stopping SocketIO server");
+            this.socketIOServer.stop();
+            this.socketIOServer = null;
+        }
     }
 
     /**

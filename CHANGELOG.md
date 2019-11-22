@@ -18,11 +18,13 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 ### Added
 
 - Actions `ReplyFileMessage(file)` and `ReplyFileMessage(file, message)` to post messages containing file through the react component. These actions upload the provided file on Xatkit's public directory (see [this commit on xatkit-runtime](https://github.com/xatkit-bot-platform/xatkit-runtime/commit/cdb0521320e2606a4ae3a5e4c12618ad018afaf8)). If the file is an image (`.gif`, `.jpg`, or `.png`) the react component prints a clickable thumbnail of the image, otherwise a link is created to open the file or download it.
+- `ReactPlatform.shutdown()` is now automatically called on JVM shutdown. This ensures the the SocketIO server has been properly stopped.
 
 ### Changed
 
 - `ReactIntentProvider` and `ChatProvider` now use the new intent provider hierarchy (see [xatkit-runtime/#221](https://github.com/xatkit-bot-platform/xatkit-runtime/issues/221)).
 - React platform's intent providers and actions now use [socket.io](https://socket.io/) to receive messages and reply in real-time. **This change breaks the public API**: the REST endpoint `/react/getAnswers` doesn't exist anymore, and messages must be passed as JSON objects through the socket).
+- The SocketIO server now allows address reuse by default: this allows to quickly restart Xatkit and reuse the same port without binding errors.
 
 ## [2.0.0] - 2019-08-20 
 
