@@ -3,15 +3,26 @@ package com.xatkit.plugins.react.platform;
 import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.xatkit.core.XatkitCore;
+import com.xatkit.core.XatkitException;
 import com.xatkit.core.server.XatkitServerUtils;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
 import com.xatkit.plugins.react.platform.action.PostMessage;
 import com.xatkit.plugins.react.platform.action.Reply;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
+import com.xatkit.util.FileUtils;
 import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
 
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -65,7 +76,7 @@ public class ReactPlatform extends ChatPlatform {
              * socket server.
              */
             String configurationOrigin = configuration.getString(ReactUtils.REACT_CLIENT_URL_KEY);
-            if(configurationOrigin.equals("*")) {
+            if (configurationOrigin.equals("*")) {
                 /*
                  * We need to set the origin to null otherwise the Access-Control-Allow-Credentials header is set to
                  * true and the browser will deny access to the resource. This is a workaround for a non-intuitive
@@ -102,6 +113,8 @@ public class ReactPlatform extends ChatPlatform {
          */
         socketioConfiguration.setRandomSession(true);
 
+        setSSLContext(socketioConfiguration, configuration);
+
         /*
          * Allow address reuses. This allows to restart Xatkit and reuse the same port without binding errors.
          */
@@ -113,6 +126,45 @@ public class ReactPlatform extends ChatPlatform {
         socketIOServer.addConnectListener(socketIOClient -> Log.info("Connected"));
         socketIOServer.addDisconnectListener(socketIOClient -> Log.info("Disconnected"));
         this.socketIOServer.startAsync();
+    }
+
+    /**
+     * Sets the SSL context in the provided {@code socketioConfiguration} from the given {@code configuration}.
+     * <p>
+     * This method checks if there is an SSL configuration in the provided {@code configuration} and sets the
+     * {@code socketioConfiguration} accordingly. Note that if the provided {@code configuration} does not define an
+     * SSL configuration the {@code socketioConfiguration} is not modified.
+     *
+     * @param socketioConfiguration the SocketIO configuration
+     * @param configuration         the Xatkit configuration containing the SSL configuration
+     * @throws XatkitException      if the provided keystore does not exist of if an error occurred when loading the
+     *                              keystore content
+     * @throws NullPointerException if the {@code configuration} contains a keystore location but does not
+     *                              contain a store/key password
+     */
+    private void setSSLContext(com.corundumstudio.socketio.Configuration socketioConfiguration,
+                               Configuration configuration) {
+        String keystorePath = configuration.getString(XatkitServerUtils.SERVER_KEYSTORE_LOCATION_KEY);
+        if (isNull(keystorePath)) {
+            Log.info("No SSL context to load");
+            return;
+        }
+        File keystoreFile = FileUtils.getFile(keystorePath, configuration);
+        InputStream keystoreIs;
+        try {
+            keystoreIs = new FileInputStream(keystoreFile);
+        } catch (FileNotFoundException e) {
+            throw new XatkitException(MessageFormat.format("Cannot get the {0} from the provided keystore location " +
+                    "{1}: the file does not exist", SSLContext.class.getSimpleName(), keystorePath), e);
+        }
+        String storePassword = configuration.getString(XatkitServerUtils.SERVER_KEYSTORE_STORE_PASSWORD_KEY);
+        String keyPassword = configuration.getString(XatkitServerUtils.SERVER_KEYSTORE_KEY_PASSWORD_KEY);
+        checkNotNull(storePassword, "Cannot load the provided keystore, property %s not set",
+                XatkitServerUtils.SERVER_KEYSTORE_STORE_PASSWORD_KEY);
+        checkNotNull(keyPassword, "Cannot load the provided keystore, property %s not set",
+                XatkitServerUtils.SERVER_KEYSTORE_KEY_PASSWORD_KEY);
+        socketioConfiguration.setKeyStore(keystoreIs);
+        socketioConfiguration.setKeyStorePassword(storePassword);
     }
 
     /**
@@ -129,7 +181,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     @Override
     public void shutdown() {
-        if(nonNull(socketIOServer)) {
+        if (nonNull(socketIOServer)) {
             Log.info("Stopping SocketIO server");
             this.socketIOServer.stop();
             this.socketIOServer = null;
