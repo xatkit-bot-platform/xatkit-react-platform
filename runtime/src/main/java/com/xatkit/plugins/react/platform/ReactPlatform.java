@@ -3,15 +3,24 @@ package com.xatkit.plugins.react.platform;
 import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.xatkit.core.XatkitCore;
+import com.xatkit.core.XatkitException;
 import com.xatkit.core.server.XatkitServerUtils;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
 import com.xatkit.plugins.react.platform.action.PostMessage;
 import com.xatkit.plugins.react.platform.action.Reply;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
+import com.xatkit.util.FileUtils;
 import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -101,6 +110,31 @@ public class ReactPlatform extends ChatPlatform {
          * .com/mrniko/netty-socketio/issues/617).
          */
         socketioConfiguration.setRandomSession(true);
+
+        String keystorePath = configuration.getString(XatkitServerUtils.SERVER_KEYSTORE_LOCATION_KEY);
+        if(isNull(keystorePath)) {
+            Log.info("No SSL context to load");
+        }
+        File keystoreFile = FileUtils.getFile(keystorePath, configuration);
+        if(keystoreFile.exists()) {
+            InputStream keystoreIs;
+            try {
+                keystoreIs = new FileInputStream(keystoreFile);
+            } catch(FileNotFoundException e) {
+                throw new XatkitException("Cannot load the keystore", e);
+            }
+            String storePassword = configuration.getString(XatkitServerUtils.SERVER_KEYSTORE_STORE_PASSWORD_KEY);
+            String keyPassword = configuration.getString(XatkitServerUtils.SERVER_KEYSTORE_KEY_PASSWORD_KEY);
+            checkNotNull(storePassword, "Cannot load the provided keystore, property %s not set",
+                    XatkitServerUtils.SERVER_KEYSTORE_STORE_PASSWORD_KEY);
+            checkNotNull(keyPassword, "Cannot load the provided keystore, property %s not set",
+                    XatkitServerUtils.SERVER_KEYSTORE_KEY_PASSWORD_KEY);
+            socketioConfiguration.setKeyStore(keystoreIs);
+            socketioConfiguration.setKeyStorePassword(storePassword);
+        } else {
+            Log.error("Keystore file doesn't exist");
+        }
+
 
         /*
          * Allow address reuses. This allows to restart Xatkit and reuse the same port without binding errors.
