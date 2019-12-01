@@ -14,6 +14,9 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 - `ReactEventProvider` that fires non-textual events related to the react client. The provider currently provides two events: `Client_Ready` and `Client_Closed`, that are triggered when a new client connects to/disconnects from Xatkit. These events set context parameters allowing to use the `Reply` action as a response. See the [wiki]( https://github.com/xatkit-bot-platform/xatkit-releases/wiki/Xatkit-React-Platform#reacteventprovider-events) for more information.
 - Support for bots hosted on `https` domains. The Xatkit configuration can now contain a `xatkit.server.ssl.keystore` property specifying the location of the keystore to use to sign http responses. Additional properties specifying keystore password are also required, check [Xatkit configuration options](https://github.com/xatkit-bot-platform/xatkit-releases/wiki/Xatkit-Options) for more information. 
 
+### Changed
+- Action parameters and return are now statically typed. **This change breaks the public API**: execution models relying on the generic `Object` type for parameter and return now need to cast values to the expected type. (e.g. `ChatPlatform.Reply(message)` now requires that `message` is a `String`, this can be fixed with the following syntax `ChatPlatform.Reply(message as String)`).  
+
 ## [3.0.0]- 2019-10-10
 
 ### Added
