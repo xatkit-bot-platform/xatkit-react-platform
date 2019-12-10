@@ -5,7 +5,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.xatkit.AbstractXatkitTest;
 import com.xatkit.core.XatkitCore;
 import com.xatkit.core.server.XatkitServerUtils;
-import com.xatkit.plugins.react.platform.io.ReactIntentProvider;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import com.xatkit.stubs.StubXatkitCore;
 import org.apache.commons.configuration2.BaseConfiguration;
@@ -56,8 +55,7 @@ public class ReactPlatformTest extends AbstractXatkitTest {
     public void constructEmptyConfiguration() {
         reactPlatform = new ReactPlatform(xatkitCore, new BaseConfiguration());
         Configuration configuration = checkAndGetConfiguration(reactPlatform);
-        assertThat(configuration.getOrigin()).as("Origin is default XatkitServer values")
-                .isEqualTo(XatkitServerUtils.DEFAULT_SERVER_LOCATION + ":" + XatkitServerUtils.DEFAULT_SERVER_PORT);
+        assertThat(configuration.getOrigin()).as("Origin is null").isNull();
         assertThat(configuration.getPort()).as("Port is the default one specified in ReactUtils")
                 .isEqualTo(ReactUtils.DEFAULT_REACT_SERVER_PORT);
     }
@@ -83,10 +81,9 @@ public class ReactPlatformTest extends AbstractXatkitTest {
         platformConfiguration.addProperty(XatkitServerUtils.SERVER_PORT_KEY, customXatkitServerPort);
         reactPlatform = new ReactPlatform(xatkitCore, platformConfiguration);
         Configuration configuration = checkAndGetConfiguration(reactPlatform);
-        assertThat(configuration.getOrigin()).as("Origin is the XatkitServer URL").isEqualTo(customXatkitServerURL +
-                ":" + customXatkitServerPort);
+        assertThat(configuration.getOrigin()).as("Origin is null").isNull();
         assertThat(configuration.getPort()).as("Port is the default one specified in ReactUtils")
-                .isEqualTo(ReactUtils.DEFAULT_REACT_SERVER_PORT);
+                .isEqualByComparingTo(ReactUtils.DEFAULT_REACT_SERVER_PORT);
     }
 
     @Test

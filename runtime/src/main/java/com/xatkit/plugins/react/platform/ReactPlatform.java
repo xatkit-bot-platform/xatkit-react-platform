@@ -69,14 +69,17 @@ public class ReactPlatform extends ChatPlatform {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
         int socketServerPort = configuration.getInt(ReactUtils.REACT_SERVER_PORT_KEY,
                 ReactUtils.DEFAULT_REACT_SERVER_PORT);
-        String origin;
-        if (configuration.containsKey(ReactUtils.REACT_CLIENT_URL_KEY)) {
+        /*
+         * Set to null by default: this corresponds to the * origin.
+         */
+        String origin = null;
+        if(configuration.containsKey(ReactUtils.REACT_CLIENT_URL_KEY)) {
             /*
              * The configuration contains a client URL value, we can directly use it to setup the origin of the
              * socket server.
              */
             String configurationOrigin = configuration.getString(ReactUtils.REACT_CLIENT_URL_KEY);
-            if (configurationOrigin.equals("*")) {
+            if(configurationOrigin.equals("*")) {
                 /*
                  * We need to set the origin to null otherwise the Access-Control-Allow-Credentials header is set to
                  * true and the browser will deny access to the resource. This is a workaround for a non-intuitive
@@ -85,18 +88,8 @@ public class ReactPlatform extends ChatPlatform {
                  */
                 origin = null;
             } else {
-                origin = configuration.getString(ReactUtils.REACT_CLIENT_URL_KEY);
+                origin = configurationOrigin;
             }
-        } else {
-            /*
-             * The configuration doesn't contain a client URL value, we can assume that the page embedding the react
-             * client is served by the Xatkit server, and use the server's URL and port values from the configuration.
-             */
-            String originURL = configuration.getString(XatkitServerUtils.SERVER_PUBLIC_URL_KEY,
-                    XatkitServerUtils.DEFAULT_SERVER_LOCATION);
-            int originPort = configuration.getInt(XatkitServerUtils.SERVER_PORT_KEY,
-                    XatkitServerUtils.DEFAULT_SERVER_PORT);
-            origin = originURL + ":" + Integer.toString(originPort);
         }
 
         com.corundumstudio.socketio.Configuration socketioConfiguration =
