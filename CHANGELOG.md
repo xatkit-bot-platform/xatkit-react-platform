@@ -10,7 +10,7 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 
 ## Added
 
-- Configuration property `xatkit.react.base_path` to specify the path of the socket.io server. This property allows to start a socket.io server that listens to URLs like `http://localhost:5001/test`, and allows to deploy multiple Xatkit bots on the same server.
+- Configuration property `xatkit.react.public_url` to specify the path of the socket.io server. This property is used when accessing the bot using the `/admin` url, and allows to tune the HTML generation to connect to a specific react server. The provided URL must contain the hostname, port, and path to the react server, and can be used in nginx configuration for URL rewriting. If not specified the `/admin` HTML page will point to `http://localhost:<react port>`.
 
 ### Changed
 

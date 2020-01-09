@@ -95,13 +95,6 @@ public class ReactPlatform extends ChatPlatform {
         com.corundumstudio.socketio.Configuration socketioConfiguration =
                 new com.corundumstudio.socketio.Configuration();
 
-        /*
-         * Set the context (i.e. the socket.io {@code path} from the configuration property.
-         */
-        String serverBasePath = configuration.getString(ReactUtils.REACT_SERVER_BASE_PATH,
-                ReactUtils.DEFAULT_REACT_SERVER_BASE_PATH);
-        socketioConfiguration.setContext(serverBasePath);
-
         socketioConfiguration.setPort(socketServerPort);
         /*
          * The URL where the chatbox is displayed. Setting this is required to avoid CORS issues.

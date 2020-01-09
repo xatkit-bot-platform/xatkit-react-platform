@@ -45,7 +45,7 @@ The React platform supports the following configuration options
 | ------------------------- | ------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | `xatkit.react.client.url` | String  | The base URL of the website displaying the react chat component. Supports wildcard (`"*"`) to allow any domain. | **Optional** (default to `<xatkit.server.public_url>:<xatkit.server.port>`) |
 | `xatkit.react.port`       | Integer | The port used to start the socket server used by the React platform. | **Optional** (default `5001`)                                |
-| `xatkit.react.base_path`  | String  | The socket.io path to use to start the server.               | **Optional** (default `/socket.io`)                          |
+| `xatkit.react.public_url` | String  | The public URL of the socket.io server. This property is used in the generated HTML page accessible at `/admin`, and allows to specify a custom location for the react server. | **Optional** (default `http://localhost:5001`)               |
 
 **Note**: if the react platform is used as a concrete implementation of the [*ChatPlatform*](https://github.com/xatkit-bot-platform/xatkit-chat-platform) the following property must be set in the Xatkit configuration:
 

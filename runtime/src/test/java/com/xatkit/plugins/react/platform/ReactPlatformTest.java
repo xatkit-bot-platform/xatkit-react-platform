@@ -58,7 +58,6 @@ public class ReactPlatformTest extends AbstractXatkitTest {
         assertThat(configuration.getOrigin()).as("Origin is null").isNull();
         assertThat(configuration.getPort()).as("Port is the default one specified in ReactUtils")
                 .isEqualTo(ReactUtils.DEFAULT_REACT_SERVER_PORT);
-        assertThat(configuration.getContext()).as("Context is the default one").isEqualTo(ReactUtils.DEFAULT_REACT_SERVER_BASE_PATH);
     }
 
     @Test
@@ -109,16 +108,6 @@ public class ReactPlatformTest extends AbstractXatkitTest {
          * this issue for more information: https://github.com/mrniko/netty-socketio/issues/400.
          */
         assertThat(configuration.getOrigin()).as("Origin is null").isEqualTo(null);
-    }
-
-    @Test
-    public void constructCustomReactBasePath() {
-        org.apache.commons.configuration2.Configuration platformConfiguration = new BaseConfiguration();
-        String basePath = "/test";
-        platformConfiguration.addProperty(ReactUtils.REACT_SERVER_BASE_PATH, basePath);
-        reactPlatform = new ReactPlatform(xatkitCore, platformConfiguration);
-        Configuration configuration = checkAndGetConfiguration(reactPlatform);
-        assertThat(configuration.getContext()).as("Context correctly set").isEqualTo(basePath);
     }
 
     private Configuration checkAndGetConfiguration(ReactPlatform reactPlatform) {

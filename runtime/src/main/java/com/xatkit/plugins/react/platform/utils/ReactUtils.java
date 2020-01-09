@@ -36,16 +36,13 @@ public interface ReactUtils extends ChatUtils {
     int DEFAULT_REACT_SERVER_PORT = 5001;
 
     /**
-     * The {@link org.apache.commons.configuration2.Configuration} key to store the base path of the
-     * {@link com.xatkit.plugins.react.platform.ReactPlatform}'s socket server.
+     * The {@link org.apache.commons.configuration2.Configuration} key to store the public URL of the
+     * {@link com.xatkit.plugins.react.platform.ReactPlatform}'s server.
+     * <p>
+     * This property is used to set the server location in the generated HTML file when accessing the bot through
+     * {@code /admin}.
      */
-    String REACT_SERVER_BASE_PATH = "xatkit.react.base_path";
-
-    /**
-     * The default value of the {@link #REACT_SERVER_BASE_PATH}
-     * {@link org.apache.commons.configuration2.Configuration} key.
-     */
-    String DEFAULT_REACT_SERVER_BASE_PATH = "/socket.io";
+    String REACT_SERVER_PUBLIC_URL = "xatkit.react.public_url";
 
     /**
      * The {@link RuntimeContexts} key used to store React-related information.
