@@ -8,6 +8,10 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 
 ## Unreleased
 
+## Added
+
+- Configuration property `xatkit.react.base_path` to specify the path of the socket.io server. This property allows to start a socket.io server that listens to URLs like `http://localhost:5001/test`, and allows to deploy multiple Xatkit bots on the same server.
+
 ### Changed
 
 - The default value of `xatkit.react.client.url` is now `*`: this eases the deployment in development / test environment. Note that production deployment **should** specify a value for this property in order to restrict the access to the deployed bot.
