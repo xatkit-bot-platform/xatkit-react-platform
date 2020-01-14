@@ -9,6 +9,7 @@ import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
 import com.xatkit.plugins.react.platform.action.PostMessage;
 import com.xatkit.plugins.react.platform.action.Reply;
+import com.xatkit.plugins.react.platform.server.ReactRestEndpointsManager;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import com.xatkit.util.FileUtils;
 import fr.inria.atlanmod.commons.log.Log;
@@ -120,6 +121,10 @@ public class ReactPlatform extends ChatPlatform {
         socketIOServer.addConnectListener(socketIOClient -> Log.info("Connected"));
         socketIOServer.addDisconnectListener(socketIOClient -> Log.info("Disconnected"));
         this.socketIOServer.startAsync();
+
+        ReactRestEndpointsManager restEndpointsManager =
+                new ReactRestEndpointsManager(this.xatkitCore.getXatkitServer(), configuration);
+        restEndpointsManager.registerRestEndpoints();
     }
 
     /**
