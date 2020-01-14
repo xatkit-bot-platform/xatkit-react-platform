@@ -85,7 +85,7 @@ public class ReactRestEndpointsManager {
      * @see XatkitServerUtils#SERVER_PUBLIC_URL_KEY
      * @see XatkitServerUtils#DEFAULT_SERVER_LOCATION
      */
-    public String serverURL;
+    private String serverURL;
 
     /**
      * A flag specifying whether the testing page should be enabled or not.
