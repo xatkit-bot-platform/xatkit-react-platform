@@ -56,9 +56,15 @@ public class ReactRestEndpointsManager {
      */
     private static List<String> TEST_CLIENT_NAMES = Arrays.asList("Bob", "Alice", "Gwendal", "Jordi");
 
+    /**
+     * The {@link List} of CSS files that can be served by the endpoints.
+     */
     private static List<String> CSS_FILE_PATHS = Arrays.asList("/admin/css/xatkit-react1.css", "/admin/css/xatkit" +
             "-react2.css");
 
+    /**
+     * The {@link List} of JS files that can be served by the endpoints.
+     */
     private static List<String> JS_FILE_PATHS = Arrays.asList("/admin/js/xatkit-react1.js", "/admin/js/xatkit-react2" +
             ".js", "/admin/js/xatkit-react3.js");
 
