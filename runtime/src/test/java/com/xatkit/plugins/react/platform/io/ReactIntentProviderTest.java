@@ -1,7 +1,6 @@
 package com.xatkit.plugins.react.platform.io;
 
 import com.xatkit.AbstractXatkitTest;
-import com.xatkit.XatkitTest;
 import com.xatkit.core.XatkitCore;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.stubs.StubXatkitCore;
