@@ -88,6 +88,18 @@ public class ReactRestEndpointsManager {
     public String serverURL;
 
     /**
+     * A flag specifying whether the testing page should be enabled or not.
+     * <p>
+     * This flag is initialized from the provided {@link Configuration} (see
+     * {@link ReactUtils#REACT_ENABLE_TESTING_PAGE}). If enabled, the testing page can be accessed at {@code
+     * public_url/admin}, where {@code public_url} is either the specified URL of the Xatkit server, or the default
+     * {@code localhost:5000} value.
+     *
+     * @see ReactUtils#REACT_ENABLE_TESTING_PAGE
+     */
+    private boolean enableTestingPage;
+
+    /**
      * Constructs a {@link ReactRestEndpointsManager} with the provided {@code xatkitServer} and {@code configuration}.
      *
      * @param xatkitServer  the {@link XatkitServer} to register the endpoints to
@@ -104,17 +116,23 @@ public class ReactRestEndpointsManager {
                 XatkitServerUtils.DEFAULT_SERVER_PORT);
         this.serverURL = configuration.getString(XatkitServerUtils.SERVER_PUBLIC_URL_KEY,
                 XatkitServerUtils.DEFAULT_SERVER_LOCATION + ":" + xatkitServerPort);
+        this.enableTestingPage = configuration.getBoolean(ReactUtils.REACT_ENABLE_TESTING_PAGE,
+                ReactUtils.DEFAULT_REACT_ENABLE_TESTING_PAGE);
     }
 
     /**
-     * Registers the REST endpoints.
+     * Registers the REST endpoints if the testing page is enabled in the Xatkit {@link Configuration}.
      * <p>
      * This method registers the {@code admin/*} handlers that are used to test a react-based bot through the browser.
+     *
+     * @see ReactUtils#REACT_ENABLE_TESTING_PAGE
      */
     public void registerRestEndpoints() {
-        this.registerAdminHTMLEndpoint();
-        this.registerAdminCSSEndpoints();
-        this.registerAdminJSEndpoints();
+        if (enableTestingPage) {
+            this.registerAdminHTMLEndpoint();
+            this.registerAdminCSSEndpoints();
+            this.registerAdminJSEndpoints();
+        }
     }
 
     /**

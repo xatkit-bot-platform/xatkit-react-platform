@@ -12,10 +12,12 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 
 - Configuration property `xatkit.react.public_url` to specify the path of the socket.io server. This property is used when accessing the bot using the `/admin` url, and allows to tune the HTML generation to connect to a specific react server. The provided URL must contain the hostname, port, and path to the react server, and can be used in nginx configuration for URL rewriting. If not specified the `/admin` HTML page will point to `http://localhost:<react port>`.
 - A set of `RestHandler` mimicking the behavior of the `/admin` endpoint previously defined in *xatkit-runtime* (see [#237](https://github.com/xatkit-bot-platform/xatkit-runtime/issues/237) for more information). The testing page can still be accessed at `localhost:5000/admin` (or the public URL specified in the configuration), and behave as before. **Note that these endpoints are only accessible when using the RestPlatform**.
+- Configuration property `xatkit.react.enable_testing_page` to specify if the testing page (located at `/admin`) should be enabled or not. This property can be set to `false` if a bot is embedded in an existing website, and should not be available through another URL. The default value for this property is `true`.
 
 ### Changed
 
 - The default value of `xatkit.react.client.url` is now `*`: this eases the deployment in development / test environment. Note that production deployment **should** specify a value for this property in order to restrict the access to the deployed bot.
+- The `/admin` endpoint is no longer available if the Xatkit configuration contains the property `xatkit.react.enable_testing_page = false`.
 
 ## [4.0.0] - 2019-12-01
 

@@ -45,6 +45,24 @@ public interface ReactUtils extends ChatUtils {
     String REACT_SERVER_PUBLIC_URL = "xatkit.react.public_url";
 
     /**
+     * The {@link org.apache.commons.configuration2.Configuration} key to enable/disable the testing page.
+     * <p>
+     * The testing page is located at {@code xatkit.server.public_url/admin}. The public URL {@code localhost:5000}
+     * is used by default if no public URL is specified in the configuration.
+     * <p>
+     * The default value of this property is {@code true} (see {@link #DEFAULT_REACT_ENABLE_TESTING_PAGE}).
+     *
+     * @see #DEFAULT_REACT_ENABLE_TESTING_PAGE
+     */
+    String REACT_ENABLE_TESTING_PAGE = "xatkit.react.enable_testing_page";
+
+    /**
+     * The default value of the {@link #REACT_ENABLE_TESTING_PAGE}
+     * {@link org.apache.commons.configuration2.Configuration} key.
+     */
+    boolean DEFAULT_REACT_ENABLE_TESTING_PAGE = true;
+
+    /**
      * The {@link RuntimeContexts} key used to store React-related information.
      */
     String REACT_CONTEXT_KEY = "react";
