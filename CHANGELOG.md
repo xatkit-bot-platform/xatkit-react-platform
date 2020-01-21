@@ -19,7 +19,6 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 
 - The default value of `xatkit.react.client.url` is now `*`: this eases the deployment in development / test environment. Note that production deployment **should** specify a value for this property in order to restrict the access to the deployed bot.
 - The `/admin` endpoint is no longer available if the Xatkit configuration contains the property `xatkit.react.enable_testing_page = false`.
-- Updated *netty-socketio* version to 1.7.18 (previously 1.7.17).
 
 ## [4.0.0] - 2019-12-01
 
