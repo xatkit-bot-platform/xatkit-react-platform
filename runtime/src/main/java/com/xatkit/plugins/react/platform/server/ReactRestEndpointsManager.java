@@ -59,14 +59,12 @@ public class ReactRestEndpointsManager {
     /**
      * The {@link List} of CSS files that can be served by the endpoints.
      */
-    private static List<String> CSS_FILE_PATHS = Arrays.asList("/admin/css/xatkit-react1.css", "/admin/css/xatkit" +
-            "-react2.css");
+    private static List<String> CSS_FILE_PATHS = Arrays.asList("/admin/css/xatkit.css");
 
     /**
      * The {@link List} of JS files that can be served by the endpoints.
      */
-    private static List<String> JS_FILE_PATHS = Arrays.asList("/admin/js/xatkit-react1.js", "/admin/js/xatkit-react2" +
-            ".js", "/admin/js/xatkit-react3.js");
+    private static List<String> JS_FILE_PATHS = Arrays.asList("/admin/js/xatkit.js");
 
     /**
      * A counter used to render the {@code /admin} page with random client names.

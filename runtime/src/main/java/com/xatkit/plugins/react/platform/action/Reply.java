@@ -7,6 +7,9 @@ import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 
+import java.util.Collections;
+import java.util.List;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -46,17 +49,31 @@ public class Reply extends PostMessage {
 
     /**
      * Constructs a new {@link Reply} with the provided {@code reactPlatform}, {@code session}, and {@code message}.
+     * <p>
+     * This constructor is similar to {@code new Reply(runtimePlatform, session, message, Collections.emptyList())}.
      *
      * @param reactPlatform the {@link ReactPlatform} containing this action
      * @param session       the {@link XatkitSession} associated to this action
      * @param message       the message to post
+     */
+    public Reply(ReactPlatform reactPlatform, XatkitSession session, String message) {
+        this(reactPlatform, session, message, Collections.emptyList());
+    }
+
+    /**
+     * Constructs a new {@link Reply} with the provided {@code reactPlatform}, {@code session}, {@code buttons}, and
+     * {@code message}.
+     *
+     * @param reactPlatform the {@link ReactPlatform} containing this action
+     * @param session       the {@link XatkitSession} associated to this action
+     * @param message       the message to post
+     * @param buttons       the quick message buttons to display with the message
      * @throws NullPointerException     if the provided {@code reactPlatform} or {@code session} is {@code null}
      * @throws IllegalArgumentException if the provided {@code message} is {@code null} or empty
      * @see #getChannel(RuntimeContexts)
      * @see PostMessage
      */
-    public Reply(ReactPlatform reactPlatform, XatkitSession session, String message) {
-        super(reactPlatform, session, message, getChannel(session.getRuntimeContexts()));
+    public Reply(ReactPlatform reactPlatform, XatkitSession session, String message, List<String> buttons) {
+        super(reactPlatform, session, message, buttons, getChannel(session.getRuntimeContexts()));
     }
-
 }

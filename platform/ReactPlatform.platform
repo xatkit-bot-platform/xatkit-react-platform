@@ -34,6 +34,10 @@ actions {
 	// We don't need to duplicated inherited actions, they are automatically inferred by inspecting the hierarchy
 	//Reply(message : String)
 	
+	PostMessage(message : String, buttons : java.util.List<String>, channel : String)
+	Reply(message : String, buttons : java.util.List<String>)
+	
+	
 	// Formatting actions
 	// These actions do not perform operations on the React client, but return Strings that can be displayed as messages.
 	ItemizeList(list : java.util.List<?>)

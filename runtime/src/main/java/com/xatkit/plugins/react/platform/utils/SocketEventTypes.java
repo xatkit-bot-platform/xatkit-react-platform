@@ -12,7 +12,11 @@ public enum SocketEventTypes {
     /**
      * A message sent by the user.
      */
-    USER_MESSAGE("user_message");
+    USER_MESSAGE("user_message"),
+    /**
+     * A quick button clicked by the user.
+     */
+    USER_BUTTON_CLICK("user_button_click");
 
     /**
      * The label of the enumeration value.

@@ -1,7 +1,7 @@
 package com.xatkit.plugins.react.platform.utils;
 
 /**
- * Represents a message received or sent by the platform.
+ * Represents a textual message received or sent by the platform.
  * <p>
  * This class is automatically instantiated and populated by Jackson when a {@link SocketEventTypes#USER_MESSAGE} is
  * received.
