@@ -19,6 +19,11 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 
 - The default value of `xatkit.react.client.url` is now `*`: this eases the deployment in development / test environment. Note that production deployment **should** specify a value for this property in order to restrict the access to the deployed bot.
 - The `/admin` endpoint is no longer available if the Xatkit configuration contains the property `xatkit.react.enable_testing_page = false`.
+- Change log level of non-critical message from the internal socket.io server. This reduces the amount of noise in Xatkit logs.
+
+### Fixed
+
+- [#9](https://github.com/xatkit-bot-platform/xatkit-react-platform/issues/9): *Change log level to trace/debug for socket.io server logs*
 
 ## [4.0.0] - 2019-12-01
 

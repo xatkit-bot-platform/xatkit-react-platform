@@ -33,8 +33,8 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
         super(reactPlatform, configuration);
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_MESSAGE.label,
                 MessageObject.class, (socketIOClient, messageObject, ackRequest) -> {
-                    Log.info("Received message {0}", messageObject.getMessage());
-                    Log.info("Session ID: {0}", socketIOClient.getSessionId());
+                    Log.debug("Received message {0}", messageObject.getMessage());
+                    Log.debug("Session ID: {0}", socketIOClient.getSessionId());
                     String username = messageObject.getUsername();
                     String channel = socketIOClient.getSessionId().toString();
                     String rawMessage = messageObject.getMessage();
@@ -46,8 +46,8 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                 });
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_BUTTON_CLICK.label,
                 QuickButtonEventObject.class, ((socketIOClient, quickButtonEventObject, ackRequest) -> {
-                    Log.info("Received click");
-                    Log.info("Session ID: {0}", socketIOClient.getSessionId());
+                    Log.debug("Received click");
+                    Log.debug("Session ID: {0}", socketIOClient.getSessionId());
                     String username = quickButtonEventObject.getUsername();
                     String channel = socketIOClient.getSessionId().toString();
                     String rawMessage = quickButtonEventObject.getSelectedValue();

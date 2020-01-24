@@ -118,8 +118,8 @@ public class ReactPlatform extends ChatPlatform {
         socketioConfiguration.setSocketConfig(socketConfig);
 
         socketIOServer = new SocketIOServer(socketioConfiguration);
-        socketIOServer.addConnectListener(socketIOClient -> Log.info("Connected"));
-        socketIOServer.addDisconnectListener(socketIOClient -> Log.info("Disconnected"));
+        socketIOServer.addConnectListener(socketIOClient -> Log.debug("Client connected"));
+        socketIOServer.addDisconnectListener(socketIOClient -> Log.debug("Client disconnected"));
         this.socketIOServer.startAsync();
 
         ReactRestEndpointsManager restEndpointsManager =
@@ -145,7 +145,7 @@ public class ReactPlatform extends ChatPlatform {
                                Configuration configuration) {
         String keystorePath = configuration.getString(XatkitServerUtils.SERVER_KEYSTORE_LOCATION_KEY);
         if (isNull(keystorePath)) {
-            Log.info("No SSL context to load");
+            Log.debug("No SSL context to load");
             return;
         }
         File keystoreFile = FileUtils.getFile(keystorePath, configuration);
