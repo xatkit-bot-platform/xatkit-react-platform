@@ -5,6 +5,7 @@ import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.plugins.react.platform.utils.BotMessageObject;
 import com.xatkit.plugins.react.platform.utils.QuickButtonValue;
+import com.xatkit.plugins.react.platform.utils.SetMessageLoaderObject;
 import com.xatkit.plugins.react.platform.utils.SocketEventTypes;
 
 import java.util.ArrayList;
@@ -71,6 +72,22 @@ public class PostMessage extends RuntimeMessageAction<ReactPlatform> {
         this.channel = channel;
         this.quickButtonValues = new ArrayList<>();
         buttons.forEach(label -> this.quickButtonValues.add(new QuickButtonValue(label, label)));
+    }
+
+    /**
+     * Notifies the client that the message is delayed.
+     * <p>
+     * This method allows to print loading dots on the client side while the action is delayed. If the provided
+     * {@code delayValue == 0} no notification is sent.
+     *
+     * @param delayValue the value of the delay (in ms)
+     */
+    @Override
+    protected void beforeDelay(int delayValue) {
+        if (delayValue > 0) {
+            this.runtimePlatform.getSocketIOServer().getClient(UUID.fromString(channel))
+                    .sendEvent(SocketEventTypes.SET_MESSAGE_LOADER.label, new SetMessageLoaderObject(true));
+        }
     }
 
     /**

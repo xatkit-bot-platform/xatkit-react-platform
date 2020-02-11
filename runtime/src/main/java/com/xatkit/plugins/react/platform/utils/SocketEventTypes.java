@@ -16,7 +16,11 @@ public enum SocketEventTypes {
     /**
      * A quick button clicked by the user.
      */
-    USER_BUTTON_CLICK("user_button_click");
+    USER_BUTTON_CLICK("user_button_click"),
+    /**
+     * Tells the client to display/hide the message loader.
+     */
+    SET_MESSAGE_LOADER("set_message_loader");
 
     /**
      * The label of the enumeration value.
