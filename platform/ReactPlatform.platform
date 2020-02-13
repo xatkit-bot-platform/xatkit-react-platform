@@ -47,4 +47,6 @@ actions {
 	
 	ReplyFileMessage(file : java.io.File)
 	ReplyFileMessage(message : String, file : java.io.File)
+	
+	ToggleDarkMode
 }

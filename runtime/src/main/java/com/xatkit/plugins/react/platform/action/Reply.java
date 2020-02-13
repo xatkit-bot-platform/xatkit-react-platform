@@ -36,7 +36,7 @@ public class Reply extends PostMessage {
      *                                  channel information
      * @throws IllegalArgumentException if the retrieved channel is not a {@link String}
      */
-    private static String getChannel(RuntimeContexts context) {
+    public static String getChannel(RuntimeContexts context) {
         checkNotNull(context, "Cannot retrieve the channel from the provided context %s", context);
         Object channelValue = context.getContextValue(ReactUtils.REACT_CONTEXT_KEY,
                 ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);

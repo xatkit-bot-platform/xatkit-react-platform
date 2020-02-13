@@ -20,7 +20,11 @@ public enum SocketEventTypes {
     /**
      * Tells the client to display/hide the message loader.
      */
-    SET_MESSAGE_LOADER("set_message_loader");
+    SET_MESSAGE_LOADER("set_message_loader"),
+    /**
+     * Tells the client to toggle dark mode.
+     */
+    TOGGLE_DARK_MODE("toggle_dark_mode");
 
     /**
      * The label of the enumeration value.
