@@ -16,6 +16,7 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 - Support for *quick message buttons* (fix [#5](https://github.com/xatkit-bot-platform/xatkit-react-platform/issues/5)): the `PostMessage` and `Reply` actions can now print buttons to drive the conversation. The values of these buttons are specified in a new parameter `buttons` of the action. This value is used as a regular user input and is matched to existing intents. **This change does not break the public API**: `PostMessage` and `Reply` actions still provide a constructor without buttons.
 - `PostMessage` now implements `RuntimeArtifactAction#beforeDelay`, and sends an event to the web client to print loading dots. Note that loading dots are not displayed if the provided delay is *0*. The loading dots are **always** removed after displaying a new bot message, the server needs to send another event to display them again.
 - Action `ToggleDarkMode` that notifies the client to enable/disable dark mode.
+- Action `Wait` that pauses the execution.
 
 ### Changed
 

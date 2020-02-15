@@ -62,4 +62,5 @@ actions {
 	ReplyFileMessage(message : String, file : java.io.File)
 	
 	ToggleDarkMode
+	Wait(delay : Integer)
 }

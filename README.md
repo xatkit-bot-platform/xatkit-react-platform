@@ -37,6 +37,7 @@ The React platform defines the following providers:
 | EnumerateList | - `list` ([**List**](https://docs.oracle.com/javase/7/docs/api/java/util/List.html)): the list to enumerate | A String presenting the provided `list` as an enumeration | String | Creates an enumeration from the provided `list`. This actions relies on `Object.toString()` to print each item's content |
 | EnumerateList | - `list` ([**List**](https://docs.oracle.com/javase/7/docs/api/java/util/List.html)): the list to enumerate<br/> - `formatter` ([**Formatter**](https://xatkit-bot-platform.github.io/xatkit-runtime-docs/releases/snapshot/doc/com/xatkit/core/platform/Formatter.html) the formatter used to print each item | A String presenting the provided `list` as an enumeration formatted with the given `formatter` | String | Creates an enumeration from the provided `list`. This action relies on the provided `formatter` to print each item's content |
 | ToggleDarkMode | - | `null` | `null` | Notifies the client to enable/disable dark mode |
+| Wait | - `delay` (**Integer**): the delay to wait | `null` | `null` | Pauses the execution for the given `delay`. |
 
 ## Options
 
