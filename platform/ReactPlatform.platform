@@ -14,6 +14,12 @@ providers {
 	}
 	event ReactEventProvider {
 		event Client_Ready 
+		creates context react_ready with lifespan 2 {
+			/*
+			 * Useless placeholder
+			 */
+			sets parameter ready
+		}
 		creates context react with lifespan 1 {
 			/*
 			 * Sets the channel parameter to allow Reply actions as response.
@@ -21,12 +27,19 @@ providers {
 			sets parameter channel
 		}
 		event Client_Closed
+		creates context react_closed with lifespan 2 {
+			/*
+			 * Useless placeholder
+			 */
+			 sets parameter closed
+		}
 		creates context react with lifespan 1 {
 			/*
 			 * Sets the channel parameter to allow Reply actions as response.
 			 */
 			sets parameter channel
 		}
+		
 	}
 }
 

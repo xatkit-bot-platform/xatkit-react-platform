@@ -21,10 +21,10 @@ The React platform defines the following providers:
 
 ### ReactEventProvider Events
 
-| Event         | Context | Parameters                                                   | Description                                                  |
-| ------------- | ------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Client_Ready  | `react` | - `channel` (**String**): the identifier of the react channel associated to the new client | Event sent when a new react client connects to the Xatkit. **Note**: this event sets the context parameter `react.channel`, allowing to use a `Reply` action to post a message in response. |
-| Client_Closed | `react` | - `channel` (**String**): the identifier of the react channel associated to the closed client | Event sent when a react client disconnects from Xatkit. **Note**: this event sets the context parameter `react.channel`, but **does not ensure that a `Reply` action invocation as a response to this event will be successful**. |
+| Event         | Context                                       | Parameters                                                   | Description                                                  |
+| ------------- | --------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Client_Ready  | - `react`<br/>- `react_ready` (*lifespan 2*)  | - `react.channel` (**String**): the identifier of the react channel associated to the new client | Event sent when a new react client connects to the Xatkit. **Note**: this event sets the context parameter `react.channel`, allowing to use a `Reply` action to post a message in response. |
+| Client_Closed | - `react`<br/>- `react_closed` (*lifespan 2*) | - `react.channel` (**String**): the identifier of the react channel associated to the closed client | Event sent when a react client disconnects from Xatkit. **Note**: this event sets the context parameter `react.channel`, but **does not ensure that a `Reply` action invocation as a response to this event will be successful**. |
 
 ## Actions
 

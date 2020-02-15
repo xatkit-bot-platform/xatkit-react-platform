@@ -39,6 +39,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
             EventInstance eventInstance = EventInstanceBuilder.newBuilder(this.xatkitCore.getEventDefinitionRegistry())
                     .setEventDefinitionName("Client_Ready")
                     .setOutContextValue("channel", channel)
+                    .setOutContextValue("ready", "true")
                     .build();
             this.sendEventInstance(eventInstance, session);
         });
@@ -52,6 +53,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
             EventInstance eventInstance = EventInstanceBuilder.newBuilder(this.xatkitCore.getEventDefinitionRegistry())
                     .setEventDefinitionName("Client_Closed")
                     .setOutContextValue("channel", channel)
+                    .setOutContextValue("closed", "true")
                     .build();
             this.sendEventInstance(eventInstance, session);
         });
