@@ -1,49 +1,47 @@
 package com.xatkit.plugins.react.platform.io;
 
-import com.xatkit.AbstractXatkitTest;
+import com.xatkit.AbstractEventProviderTest;
 import com.xatkit.core.XatkitCore;
+import com.xatkit.core.server.XatkitServer;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import com.xatkit.stubs.StubXatkitCore;
 import org.apache.commons.configuration2.BaseConfiguration;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static java.util.Objects.nonNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class ReactIntentProviderTest extends AbstractXatkitTest {
+public class ReactIntentProviderTest extends AbstractEventProviderTest<ReactIntentProvider, ReactPlatform> {
 
-    private static XatkitCore xatkitCore;
+    private XatkitServer mockedXatkitServer;
 
-    private static ReactPlatform reactPlatform;
-
-    private ReactIntentProvider reactIntentProvider;
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        xatkitCore = new StubXatkitCore();
-        reactPlatform = new ReactPlatform(xatkitCore, new BaseConfiguration());
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() {
-        reactPlatform.shutdown();
-        if(!xatkitCore.isShutdown()) {
-            xatkitCore.shutdown();
-        }
+    @Before
+    public void setUp() {
+        /*
+         * Can't call super.setUp because we need to mock the XatkitServer before calling getPlatform.
+         */
+        mockedXatkitCore = mock(XatkitCore.class);
+        mockedXatkitServer = mock(XatkitServer.class);
+        when(mockedXatkitCore.getXatkitServer()).thenReturn(mockedXatkitServer);
+        platform = getPlatform();
     }
 
     @After
     public void tearDown() {
-        if(nonNull(reactIntentProvider)) {
-            reactIntentProvider.close();
+        if(nonNull(provider)) {
+            provider.close();
         }
     }
 
     @Test(expected = NullPointerException.class)
     public void constructNullPlatform() {
-        reactIntentProvider = new ReactIntentProvider(null, new BaseConfiguration());
+        provider = new ReactIntentProvider(null, new BaseConfiguration());
     }
 
+    @Override
+    protected ReactPlatform getPlatform() {
+        return new ReactPlatform(mockedXatkitCore, new BaseConfiguration());
+    }
 }
