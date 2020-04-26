@@ -10,6 +10,9 @@ providers {
 			sets parameter channel
 			sets parameter username
 			sets parameter rawMessage
+			sets parameter hostname
+			sets parameter ^url
+			sets parameter origin
 		}
 	}
 	event ReactEventProvider {

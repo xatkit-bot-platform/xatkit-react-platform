@@ -1,5 +1,7 @@
 package com.xatkit.plugins.react.platform.utils;
 
+import lombok.Data;
+
 /**
  * Represents a textual message received or sent by the platform.
  * <p>
@@ -8,6 +10,7 @@ package com.xatkit.plugins.react.platform.utils;
  * <p>
  * This class can also be used to send bot messages that will be printed back as JSON by Jackson.
  */
+@Data
 public class MessageObject {
 
     /**
@@ -19,6 +22,21 @@ public class MessageObject {
      * The name of the user who sent the message.
      */
     private String username;
+
+    /**
+     * The hostname of the page where the bot is accessed.
+     */
+    private String hostname;
+
+    /**
+     * The url of the page where the bot is accessed.
+     */
+    private String url;
+
+    /**
+     * The origin of the page where the bot is accessed.
+     */
+    private String origin;
 
     /**
      * Constructs an empty {@link MessageObject}.
@@ -40,41 +58,5 @@ public class MessageObject {
     public MessageObject(String message, String username) {
         this.message = message;
         this.username = username;
-    }
-
-    /**
-     * Sets the message with the provided {@code message}.
-     *
-     * @param message the message to set
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
-     * Sets the username with the provided {@code username}.
-     *
-     * @param username the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * Returns the message.
-     *
-     * @return the message
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * Returns the name of the user sending the message.
-     *
-     * @return the name of the user sending the message
-     */
-    public String getUsername() {
-        return this.username;
     }
 }

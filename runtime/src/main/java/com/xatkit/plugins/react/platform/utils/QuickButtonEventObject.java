@@ -1,8 +1,11 @@
 package com.xatkit.plugins.react.platform.utils;
 
+import lombok.Data;
+
 /**
  * The event triggered when a user clicks one a quick button.
  */
+@Data
 public class QuickButtonEventObject {
 
     /**
@@ -19,48 +22,24 @@ public class QuickButtonEventObject {
     private String selectedValue;
 
     /**
+     * The hostname of the page where the bot is accessed.
+     */
+    private String hostname;
+
+    /**
+     * The url of the page where the bot is accessed.
+     */
+    private String url;
+
+    /**
+     * The origin of the page where the bot is accessed.
+     */
+    private String origin;
+
+    /**
      * Constructs an empty {@link QuickButtonEventObject}.
      */
     public QuickButtonEventObject() {
         // Empty constructor required by Jackson
-    }
-
-    /**
-     * Sets the username associated to this event.
-     *
-     * @param username the username
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * Sets the selected value associated to this event.
-     *
-     * @param selectedValue the selected value
-     */
-    public void setSelectedValue(String selectedValue) {
-        this.selectedValue = selectedValue;
-    }
-
-    /**
-     * Returns the name of the user who clicked on a quick button.
-     *
-     * @return the name of the user who clicked on a quick button
-     */
-    public String getUsername() {
-        return this.username;
-    }
-
-    /**
-     * Returns the value selected by the user.
-     * <p>
-     * This selected value matches the {@link QuickButtonValue#getValue()}, i.e. it is not possible to retrieve the
-     * selected label from the user.
-     *
-     * @return the value selected by the user
-     */
-    public String getSelectedValue() {
-        return this.selectedValue;
     }
 }

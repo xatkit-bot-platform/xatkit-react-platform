@@ -66,4 +66,19 @@ public interface ReactUtils extends ChatUtils {
      * The {@link RuntimeContexts} key used to store React-related information.
      */
     String REACT_CONTEXT_KEY = "react";
+
+    /**
+     * The {@link RuntimeContexts} key used to store the React hostname information.
+     */
+    String REACT_HOSTNAME_CONTEXT_KEY = "hostname";
+
+    /**
+     * The {@link RuntimeContexts} key used to store the React url information.
+     */
+    String REACT_URL_CONTEXT_KEY = "url";
+
+    /**
+     * The {@link RuntimeContexts} key used to store the React origin information.
+     */
+    String REACT_ORIGIN_CONTEXT_KEY = "origin";
 }

@@ -1,8 +1,12 @@
 package com.xatkit.plugins.react.platform.utils;
 
+import kotlin.internal.contracts.Returns;
+import lombok.Data;
+
 /**
  * Represents a command asking the client to display/hide the message loader.
  */
+@Data
 public class SetMessageLoaderObject {
 
     /**
@@ -24,23 +28,5 @@ public class SetMessageLoaderObject {
      */
     public SetMessageLoaderObject(boolean enableLoader) {
         this.enableLoader = enableLoader;
-    }
-
-    /**
-     * Sets whether the message loader should be displayed or hidden.
-     *
-     * @param enableLoader whether the message loader should be displayed or hidden
-     */
-    public void setEnableLoader(boolean enableLoader) {
-        this.enableLoader = enableLoader;
-    }
-
-    /**
-     * Returns whether the message loader should be displayed or hidden.
-     *
-     * @return whether the message loader should be displayed or hidden
-     */
-    public boolean getEnableLoader() {
-        return this.enableLoader;
     }
 }

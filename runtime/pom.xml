@@ -17,6 +17,7 @@
         <junit.version>4.12</junit.version>
         <assertj.version>3.10.0</assertj.version>
         <mockito-version>3.3.3</mockito-version>
+        <lombok.version>1.18.12</lombok.version>
     </properties>
 
     <dependencies>
@@ -26,6 +27,13 @@
         <dependency>
             <groupId>com.corundumstudio.socketio</groupId>
             <artifactId>netty-socketio</artifactId>
+        </dependency>
+
+        <!-- Utils -->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
 
         <!-- Xatkit Internal -->
@@ -80,6 +88,15 @@
                 <groupId>com.corundumstudio.socketio</groupId>
                 <artifactId>netty-socketio</artifactId>
                 <version>${netty-socketio.version}</version>
+            </dependency>
+
+            <!-- Utils -->
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <!-- Tests -->
