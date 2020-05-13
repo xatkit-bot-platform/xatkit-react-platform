@@ -6,9 +6,9 @@ import com.xatkit.core.session.XatkitSession;
 import com.xatkit.intent.EventInstance;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import com.xatkit.plugins.react.platform.utils.InitObject;
+import com.xatkit.plugins.react.platform.socket.event.Init;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
-import com.xatkit.plugins.react.platform.utils.SocketEventTypes;
+import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 import org.apache.commons.configuration2.Configuration;
 
 /**
@@ -37,7 +37,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
          * Register the listener that creates the Client_Ready event.
          * This event is fired every time the client connects to the socket server.
          */
-        this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.INIT.label, InitObject.class,
+        this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.INIT.label, Init.class,
                 (socketIOClient, initObject, ackRequest) -> {
             String channel = socketIOClient.getSessionId().toString();
             XatkitSession session = this.runtimePlatform.createSessionFromChannel(channel);

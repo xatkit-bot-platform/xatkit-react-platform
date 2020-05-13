@@ -1,4 +1,4 @@
-package com.xatkit.plugins.react.platform.utils;
+package com.xatkit.plugins.react.platform.socket;
 
 /**
  * The types of events supported by the socket server.

@@ -3,7 +3,7 @@ package com.xatkit.plugins.react.platform.action;
 import com.xatkit.core.platform.action.RuntimeAction;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import com.xatkit.plugins.react.platform.utils.SocketEventTypes;
+import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 
 import java.util.UUID;
 

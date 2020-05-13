@@ -3,10 +3,10 @@ package com.xatkit.plugins.react.platform.action;
 import com.xatkit.core.platform.action.RuntimeMessageAction;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import com.xatkit.plugins.react.platform.utils.BotMessageObject;
-import com.xatkit.plugins.react.platform.utils.QuickButtonValue;
-import com.xatkit.plugins.react.platform.utils.SetMessageLoaderObject;
-import com.xatkit.plugins.react.platform.utils.SocketEventTypes;
+import com.xatkit.plugins.react.platform.socket.action.SendBotMessage;
+import com.xatkit.plugins.react.platform.socket.action.QuickButtonDescriptor;
+import com.xatkit.plugins.react.platform.socket.action.SetMessageLoaderObject;
+import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public class PostMessage extends RuntimeMessageAction<ReactPlatform> {
     /**
      * The descriptors of the <i>quick buttons</i> to print to the user.
      */
-    private List<QuickButtonValue> quickButtonValues;
+    private List<QuickButtonDescriptor> quickButtonDescriptors;
 
     /**
      * The channel to post the message to.
@@ -70,8 +70,8 @@ public class PostMessage extends RuntimeMessageAction<ReactPlatform> {
         checkNotNull(buttons, "Cannot build a %s from the provided buttons %s", this.getClass().getSimpleName(),
                 buttons);
         this.channel = channel;
-        this.quickButtonValues = new ArrayList<>();
-        buttons.forEach(label -> this.quickButtonValues.add(new QuickButtonValue(label, label)));
+        this.quickButtonDescriptors = new ArrayList<>();
+        buttons.forEach(label -> this.quickButtonDescriptors.add(new QuickButtonDescriptor(label, label)));
     }
 
     /**
@@ -100,8 +100,8 @@ public class PostMessage extends RuntimeMessageAction<ReactPlatform> {
     @Override
     protected Object compute() {
         this.runtimePlatform.getSocketIOServer().getClient(UUID.fromString(channel))
-                .sendEvent(SocketEventTypes.BOT_MESSAGE.label, new BotMessageObject(message, "xatkit",
-                        this.quickButtonValues));
+                .sendEvent(SocketEventTypes.BOT_MESSAGE.label, new SendBotMessage("xatkit", message,
+                        this.quickButtonDescriptors));
         return null;
     }
 

@@ -6,10 +6,10 @@ import com.xatkit.intent.RecognizedIntent;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.chat.platform.io.ChatIntentProvider;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import com.xatkit.plugins.react.platform.utils.MessageObject;
-import com.xatkit.plugins.react.platform.utils.QuickButtonEventObject;
+import com.xatkit.plugins.react.platform.socket.event.UserMessageReceived;
+import com.xatkit.plugins.react.platform.socket.event.UserQuickButtonSelected;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
-import com.xatkit.plugins.react.platform.utils.SocketEventTypes;
+import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
 
@@ -32,7 +32,7 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
     public ReactIntentProvider(ReactPlatform reactPlatform, Configuration configuration) {
         super(reactPlatform, configuration);
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_MESSAGE.label,
-                MessageObject.class, (socketIOClient, messageObject, ackRequest) -> {
+                UserMessageReceived.class, (socketIOClient, messageObject, ackRequest) -> {
                     Log.debug("Received message {0}", messageObject.getMessage());
                     Log.debug("Session ID: {0}", socketIOClient.getSessionId());
                     String username = messageObject.getUsername();
@@ -45,7 +45,7 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     this.sendEventInstance(recognizedIntent, session);
                 });
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_BUTTON_CLICK.label,
-                QuickButtonEventObject.class, ((socketIOClient, quickButtonEventObject, ackRequest) -> {
+                UserQuickButtonSelected.class, ((socketIOClient, quickButtonEventObject, ackRequest) -> {
                     Log.debug("Received click");
                     Log.debug("Session ID: {0}", socketIOClient.getSessionId());
                     String username = quickButtonEventObject.getUsername();
