@@ -1,9 +1,9 @@
-package com.xatkit.plugins.react.platform.utils;
+package com.xatkit.plugins.react.platform.socket.action;
 
 import lombok.Data;
 
 /**
- * Represents a command asking the client to display/hide the message loader.
+ * Tells the bot UI to display/hide the message loader.
  */
 @Data
 public class SetMessageLoaderObject {

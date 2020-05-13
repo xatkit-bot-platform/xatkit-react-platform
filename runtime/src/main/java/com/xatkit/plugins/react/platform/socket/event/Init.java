@@ -1,4 +1,4 @@
-package com.xatkit.plugins.react.platform.utils;
+package com.xatkit.plugins.react.platform.socket.event;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * This event contains additional information that cannot be set easily in the {@code connect} event.
  */
 @Data
-public class InitObject {
+public class Init {
 
     /**
      * The hostname of the page where the bot is accessed.
