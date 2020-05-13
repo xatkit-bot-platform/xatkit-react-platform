@@ -38,13 +38,10 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     String username = messageObject.getUsername();
                     String channel = socketIOClient.getSessionId().toString();
                     String rawMessage = messageObject.getMessage();
-                    String hostname = messageObject.getHostname();
-                    String url = messageObject.getUrl();
-                    String origin = messageObject.getOrigin();
                     XatkitSession session = this.getRuntimePlatform().createSessionFromChannel(channel);
                     RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(rawMessage,
                             session, this.getRuntimePlatform().getXatkitCore());
-                    setSessionContexts(session, username, channel, rawMessage, hostname, url, origin);
+                    setSessionContexts(session, username, channel, rawMessage);
                     this.sendEventInstance(recognizedIntent, session);
                 });
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_BUTTON_CLICK.label,
@@ -54,13 +51,10 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     String username = quickButtonEventObject.getUsername();
                     String channel = socketIOClient.getSessionId().toString();
                     String rawMessage = quickButtonEventObject.getSelectedValue();
-                    String hostname = quickButtonEventObject.getHostname();
-                    String url = quickButtonEventObject.getUrl();
-                    String origin = quickButtonEventObject.getOrigin();
                     XatkitSession session = this.getRuntimePlatform().createSessionFromChannel(channel);
                     RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(rawMessage,
                             session, this.getRuntimePlatform().getXatkitCore());
-                    setSessionContexts(session, username, channel, rawMessage, hostname, url, origin);
+                    setSessionContexts(session, username, channel, rawMessage);
                     this.sendEventInstance(recognizedIntent, session);
                 }));
     }
@@ -77,20 +71,13 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
      * @param channel    the channel value to set in the session
      * @param rawMessage the raw message value to set in the session
      */
-    private void setSessionContexts(XatkitSession session, String username, String channel, String rawMessage,
-                                    String hostname, String url, String origin) {
+    private void setSessionContexts(XatkitSession session, String username, String channel, String rawMessage) {
         session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
                 ReactUtils.CHAT_USERNAME_CONTEXT_KEY, username);
         session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
                 ReactUtils.CHAT_CHANNEL_CONTEXT_KEY, channel);
         session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
                 ReactUtils.CHAT_RAW_MESSAGE_CONTEXT_KEY, rawMessage);
-        session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                ReactUtils.REACT_HOSTNAME_CONTEXT_KEY, hostname);
-        session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                ReactUtils.REACT_URL_CONTEXT_KEY, url);
-        session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                ReactUtils.REACT_ORIGIN_CONTEXT_KEY, origin);
         /*
          * This provider extends ChatIntentProvider, and must set chat-related context values.
          */

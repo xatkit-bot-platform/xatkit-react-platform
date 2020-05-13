@@ -24,6 +24,7 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 - The `/admin` endpoint is no longer available if the Xatkit configuration contains the property `xatkit.react.enable_testing_page = false`.
 - Change log level of non-critical message from the internal socket.io server. This reduces the amount of noise in Xatkit logs.
 - Events `Client_Ready` and `Client_Closed` create empty contexts `react_ready` and `react_closed` in addition to the `react` context. These contexts can be used to define intents following the conversation start.
+- Event `Client_Ready` now defines additional parameters in the `react` context: `react.hostname`, `react.url`, and `react.origin` containing information related to the page where the bot is located.
 
 ### Fixed
 

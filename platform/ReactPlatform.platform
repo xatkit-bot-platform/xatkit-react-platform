@@ -28,6 +28,9 @@ providers {
 			 * Sets the channel parameter to allow Reply actions as response.
 			 */
 			sets parameter channel
+			sets parameter hostname
+			sets parameter ^url
+			sets parameter origin
 		}
 		event Client_Closed
 		creates context react_closed with lifespan 2 {

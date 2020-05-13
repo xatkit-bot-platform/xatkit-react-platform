@@ -22,21 +22,6 @@ public class QuickButtonEventObject {
     private String selectedValue;
 
     /**
-     * The hostname of the page where the bot is accessed.
-     */
-    private String hostname;
-
-    /**
-     * The url of the page where the bot is accessed.
-     */
-    private String url;
-
-    /**
-     * The origin of the page where the bot is accessed.
-     */
-    private String origin;
-
-    /**
      * Constructs an empty {@link QuickButtonEventObject}.
      */
     public QuickButtonEventObject() {

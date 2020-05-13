@@ -24,21 +24,6 @@ public class MessageObject {
     private String username;
 
     /**
-     * The hostname of the page where the bot is accessed.
-     */
-    private String hostname;
-
-    /**
-     * The url of the page where the bot is accessed.
-     */
-    private String url;
-
-    /**
-     * The origin of the page where the bot is accessed.
-     */
-    private String origin;
-
-    /**
      * Constructs an empty {@link MessageObject}.
      * <p>
      * The default constructor is required by Jackson (initialization is done through the setters).

@@ -24,7 +24,11 @@ public enum SocketEventTypes {
     /**
      * Tells the client to toggle dark mode.
      */
-    TOGGLE_DARK_MODE("toggle_dark_mode");
+    TOGGLE_DARK_MODE("toggle_dark_mode"),
+    /**
+     * The Init message sent by the client.
+     */
+    INIT("init");
 
     /**
      * The label of the enumeration value.
