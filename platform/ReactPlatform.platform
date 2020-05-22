@@ -66,6 +66,8 @@ actions {
 	
 	ReplyFileMessage(file : java.io.File)
 	ReplyFileMessage(message : String, file : java.io.File)
+
+	ReplyLinkSnippet(title : String, link : String, img: String)
 	
 	ToggleDarkMode
 	Wait(delay : Integer)

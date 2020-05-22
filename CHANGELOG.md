@@ -17,6 +17,7 @@ The changelog format is based on [Keep a Changelog](https://keepachangelog.com/e
 - `PostMessage` now implements `RuntimeArtifactAction#beforeDelay`, and sends an event to the web client to print loading dots. Note that loading dots are not displayed if the provided delay is *0*. The loading dots are **always** removed after displaying a new bot message, the server needs to send another event to display them again.
 - Action `ToggleDarkMode` that notifies the client to enable/disable dark mode.
 - Action `Wait` that pauses the execution.
+- Action `ReplyLinkSnippet` to tell the UI to display a link snippet with a preview image.
 
 ### Changed
 

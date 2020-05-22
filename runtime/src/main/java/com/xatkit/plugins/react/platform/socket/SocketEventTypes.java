@@ -10,6 +10,10 @@ public enum SocketEventTypes {
      */
     BOT_MESSAGE("bot_message"),
     /**
+     * A link snippet with preview image sent by the bot.
+     */
+    LINK_SNIPPET("link_snippet_with_img"),
+    /**
      * A message sent by the user.
      */
     USER_MESSAGE("user_message"),
