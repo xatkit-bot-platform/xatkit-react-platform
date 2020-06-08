@@ -41,6 +41,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                 (socketIOClient, initObject, ackRequest) -> {
             String channel = socketIOClient.getSessionId().toString();
             XatkitSession session = this.runtimePlatform.createSessionFromChannel(channel);
+            session.setOrigin(initObject.getOrigin());
             EventInstance eventInstance = EventInstanceBuilder.newBuilder(this.xatkitCore.getEventDefinitionRegistry())
                     .setEventDefinitionName("Client_Ready")
                     .setOutContextValue(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, channel)
