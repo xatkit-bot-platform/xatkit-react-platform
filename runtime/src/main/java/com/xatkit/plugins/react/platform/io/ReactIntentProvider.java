@@ -6,12 +6,16 @@ import com.xatkit.intent.RecognizedIntent;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.chat.platform.io.ChatIntentProvider;
 import com.xatkit.plugins.react.platform.ReactPlatform;
+import com.xatkit.plugins.react.platform.socket.action.InitConfirm;
+import com.xatkit.plugins.react.platform.socket.event.Init;
 import com.xatkit.plugins.react.platform.socket.event.UserMessageReceived;
 import com.xatkit.plugins.react.platform.socket.event.UserQuickButtonSelected;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
+
+import java.util.UUID;
 
 /**
  * A {@link ChatIntentProvider} that receives message through the socket server and translates them into
@@ -57,6 +61,12 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     setSessionContexts(session, username, channel, rawMessage);
                     this.sendEventInstance(recognizedIntent, session);
                 }));
+        this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.INIT.label, Init.class,
+                (socketIOClient, initObject, ackRequest) -> {
+                    Log.info("RECEIVED " + initObject.getConversationId());
+                    socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
+                            new InitConfirm("abc"));
+                });
     }
 
     /**

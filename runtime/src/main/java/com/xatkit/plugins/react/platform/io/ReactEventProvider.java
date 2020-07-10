@@ -9,6 +9,7 @@ import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.plugins.react.platform.socket.event.Init;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
+import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
 
 /**
@@ -42,6 +43,10 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
             String channel = socketIOClient.getSessionId().toString();
             XatkitSession session = this.runtimePlatform.createSessionFromChannel(channel);
             session.setOrigin(initObject.getOrigin());
+
+            String convId = initObject.getConversationId();
+            Log.info("RECEIVED CONV ID {0}", convId);
+
             EventInstance eventInstance = EventInstanceBuilder.newBuilder(this.xatkitCore.getEventDefinitionRegistry())
                     .setEventDefinitionName("Client_Ready")
                     .setOutContextValue(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, channel)

@@ -32,7 +32,9 @@ public enum SocketEventTypes {
     /**
      * The Init message sent by the client.
      */
-    INIT("init");
+    INIT("init"),
+
+    INIT_CONFIRM("init_confirm");
 
     /**
      * The label of the enumeration value.

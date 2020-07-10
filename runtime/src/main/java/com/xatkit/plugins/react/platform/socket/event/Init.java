@@ -24,4 +24,6 @@ public class Init {
      * The origin of the page where the bot is accessed.
      */
     private String origin;
+
+    private String conversationId;
 }
