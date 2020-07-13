@@ -6,10 +6,14 @@ import com.xatkit.core.session.XatkitSession;
 import com.xatkit.intent.EventInstance;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.react.platform.ReactPlatform;
+import com.xatkit.plugins.react.platform.socket.action.InitConfirm;
 import com.xatkit.plugins.react.platform.socket.event.Init;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
+import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
+
+import static java.util.Objects.isNull;
 
 /**
  * A {@link RuntimeEventProvider} that fires non-textual events related to the Xatkit react chat component.
@@ -37,14 +41,28 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
          * Register the listener that creates the Client_Ready event.
          * This event is fired every time the client connects to the socket server.
          */
+        this.runtimePlatform.getSocketIOServer().removeAllListeners(SocketEventTypes.INIT.label);
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.INIT.label, Init.class,
                 (socketIOClient, initObject, ackRequest) -> {
-            String channel = socketIOClient.getSessionId().toString();
-            XatkitSession session = this.runtimePlatform.createSessionFromChannel(channel);
-            session.setOrigin(initObject.getOrigin());
+            String socketId = socketIOClient.getSessionId().toString();
+
+            XatkitSession session = this.runtimePlatform.getSessionForSocketId(socketId);
+
+            if(isNull(session)) {
+                String conversationId = initObject.getConversationId();
+                Log.debug("Client requested conversation {0}", conversationId);
+                session = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
+                session.setOrigin(initObject.getOrigin());
+                socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
+                        new InitConfirm(session.getSessionId()));
+            }
+            /*
+             * The session already exists, no need to send an ack event.
+             */
+
             EventInstance eventInstance = EventInstanceBuilder.newBuilder(this.xatkitCore.getEventDefinitionRegistry())
                     .setEventDefinitionName("Client_Ready")
-                    .setOutContextValue(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, channel)
+                    .setOutContextValue(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, socketId)
                     .setOutContextValue("ready", "true")
                     .setOutContextValue(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY, initObject.getHostname())
                     .setOutContextValue(ReactUtils.REACT_URL_CONTEXT_KEY, initObject.getUrl())
@@ -58,7 +76,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
          */
         this.runtimePlatform.getSocketIOServer().addDisconnectListener(socketIOClient -> {
             String channel = socketIOClient.getSessionId().toString();
-            XatkitSession session = this.runtimePlatform.createSessionFromChannel(channel);
+            XatkitSession session = this.runtimePlatform.getSessionForSocketId(channel);
             EventInstance eventInstance = EventInstanceBuilder.newBuilder(this.xatkitCore.getEventDefinitionRegistry())
                     .setEventDefinitionName("Client_Closed")
                     .setOutContextValue(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, channel)

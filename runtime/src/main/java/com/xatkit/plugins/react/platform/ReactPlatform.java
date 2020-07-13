@@ -3,7 +3,6 @@ package com.xatkit.plugins.react.platform;
 import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.xatkit.core.XatkitCore;
-import com.xatkit.core.XatkitException;
 import com.xatkit.core.server.XatkitServerUtils;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
@@ -11,18 +10,15 @@ import com.xatkit.plugins.react.platform.action.PostMessage;
 import com.xatkit.plugins.react.platform.action.Reply;
 import com.xatkit.plugins.react.platform.server.ReactRestEndpointsManager;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
-import com.xatkit.util.FileUtils;
 import fr.inria.atlanmod.commons.log.Log;
+import lombok.NonNull;
 import org.apache.commons.configuration2.Configuration;
 
-import javax.net.ssl.SSLContext;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.text.MessageFormat;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -50,6 +46,15 @@ public class ReactPlatform extends ChatPlatform {
     private SocketIOServer socketIOServer;
 
     /**
+     * Stores the mapping from {@code socketId} to {@code conversationId}.
+     * <p>
+     * This mapping allows to retrieve the conversation associated to a given socket. Adding a new
+     * socket/conversation entry allows to continue an existing conversation in a different socket connection (e.g.
+     * when the client reloads the page).
+     */
+    private Map<String, String> socketToConversationMap = new HashMap<>();
+
+    /**
      * Constructs a new {@link ReactPlatform} from the provided {@link XatkitCore} and {@link Configuration}.
      * <p>
      * This constructor initializes the underlying socket server using the {@link ReactUtils#REACT_CLIENT_URL_KEY}
@@ -74,13 +79,13 @@ public class ReactPlatform extends ChatPlatform {
          * Set to null by default: this corresponds to the * origin.
          */
         String origin = null;
-        if(configuration.containsKey(ReactUtils.REACT_CLIENT_URL_KEY)) {
+        if (configuration.containsKey(ReactUtils.REACT_CLIENT_URL_KEY)) {
             /*
              * The configuration contains a client URL value, we can directly use it to setup the origin of the
              * socket server.
              */
             String configurationOrigin = configuration.getString(ReactUtils.REACT_CLIENT_URL_KEY);
-            if(configurationOrigin.equals("*")) {
+            if (configurationOrigin.equals("*")) {
                 /*
                  * We need to set the origin to null otherwise the Access-Control-Allow-Credentials header is set to
                  * true and the browser will deny access to the resource. This is a workaround for a non-intuitive
@@ -147,15 +152,53 @@ public class ReactPlatform extends ChatPlatform {
     }
 
     /**
-     * Creates a {@link XatkitSession} from the provided {@code channel}.
+     * Retrieves the {@link XatkitSession} associated to the provided {@code socketId}.
      * <p>
-     * This method ensures that the same {@link XatkitSession} is returned for the same {@code channel}.
+     * This method looks for an existing <i>conversation ID</i> associated to the provided {@code socketId} and
+     * returns the corresponding {@link XatkitSession} if it exists, or {@code null} if it cannot be found.
      *
-     * @param channel the channel to create a {@link XatkitSession} from
+     * @param socketId the socketId to create a {@link XatkitSession} from
+     * @return the retrieved {@link XatkitSession}, or {@code null} if it cannot be found
+     * @see #createSessionForConversation(String, String) to create a {@link XatkitSession} for a given {@code
+     * sessionId} and {@code conversationId}.
+     */
+    public @Nullable
+    XatkitSession getSessionForSocketId(@NonNull String socketId) {
+        String conversationId = this.socketToConversationMap.get(socketId);
+        if (isNull(conversationId)) {
+            /*
+             * The conversationId can be null if the event/intent provider ask for the session before it has been
+             * associated to a conversation. In this case the provider should include some initialization code
+             * relying on #createSessionForConversation to create a new XatkitSession.
+             */
+            return null;
+        }
+        return this.xatkitCore.getOrCreateXatkitSession(conversationId);
+    }
+
+    /**
+     * Creates a {@link XatkitSession} for the provided {@code conversationId} hosted by the socket {@code socketId}.
+     * <p>
+     * Conversations typically live longer than socket connections (e.g. when the user reloads the page where the bot
+     * is hosted the socket changes but the conversation is the same), this implies that the {@link ReactPlatform}
+     * can only create sessions for a given {@code socketId}/{@code conversationId} pair, and will update the mapping
+     * when new socket connections are opened and referencing an existing conversation.
+     * <p>
+     * <b>Note</b>: the provided {@code conversationId} can be {@code null} (i.e. a totally new conversation is
+     * created). In this case the method will create a new {@code conversationId} and affect a random identifier to
+     * it.
+     *
+     * @param socketId       the identifier of the socket connection hosting the conversation
+     * @param conversationId the identifier of the conversation to create a session for
      * @return the created {@link XatkitSession}
      */
-    public XatkitSession createSessionFromChannel(String channel) {
-        return this.xatkitCore.getOrCreateXatkitSession(channel);
+    public @NonNull XatkitSession createSessionForConversation(@NonNull String socketId,
+                                                               @Nullable String conversationId) {
+        if (isNull(conversationId)) {
+            conversationId = UUID.randomUUID().toString();
+        }
+        this.socketToConversationMap.put(socketId, conversationId);
+        return this.xatkitCore.getOrCreateXatkitSession(conversationId);
     }
 
 }
