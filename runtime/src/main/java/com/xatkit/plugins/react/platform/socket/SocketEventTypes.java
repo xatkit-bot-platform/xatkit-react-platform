@@ -33,7 +33,9 @@ public enum SocketEventTypes {
      * The Init message sent by the client.
      */
     INIT("init"),
-
+    /**
+     * The ACK message sent to the client after receiving an INIT event.
+     */
     INIT_CONFIRM("init_confirm");
 
     /**

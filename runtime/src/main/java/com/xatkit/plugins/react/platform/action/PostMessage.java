@@ -107,6 +107,6 @@ public class PostMessage extends RuntimeMessageAction<ReactPlatform> {
 
     @Override
     protected XatkitSession getClientSession() {
-        return this.runtimePlatform.createSessionFromChannel(channel);
+        return this.runtimePlatform.getSessionForSocketId(channel);
     }
 }

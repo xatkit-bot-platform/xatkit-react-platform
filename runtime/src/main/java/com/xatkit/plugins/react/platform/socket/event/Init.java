@@ -25,5 +25,11 @@ public class Init {
      */
     private String origin;
 
+    /**
+     * The identifier of the conversation between the user and the bot.
+     * <p>
+     * If this value is filled the client is requesting a specific conversation to the server. If this value is
+     * {@code null} this means that the client is asking for a fresh conversation (with an empty session).
+     */
     private String conversationId;
 }
