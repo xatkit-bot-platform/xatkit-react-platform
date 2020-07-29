@@ -184,7 +184,7 @@ public class ReactPlatform extends ChatPlatform {
      * @return the item list formatted in markdown
      */
     public String itemizeList(@NonNull StateContext context, @NonNull List<?> list, @Nullable String formatterName) {
-        ItemizeList action = new ItemizeList(this, context, list);
+        ItemizeList action = new ItemizeList(this, context, list, formatterName);
         RuntimeActionResult result = this.executeRuntimeAction(action);
         return (String) result.getResult();
     }
@@ -196,7 +196,7 @@ public class ReactPlatform extends ChatPlatform {
      * @param message the message to post
      * @param channel the socket identifier to post the message to
      */
-    public void postMessage(StateContext context, String message, String channel) {
+    public void postMessage(@NonNull StateContext context, @NonNull String message, @NonNull String channel) {
         PostMessage action = new PostMessage(this, context, message, channel);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
@@ -209,7 +209,8 @@ public class ReactPlatform extends ChatPlatform {
      * @param buttons the list of button values to display to the user
      * @param channel the socket identifier to post the message to
      */
-    public void postMessage(StateContext context, String message, List<String> buttons, String channel) {
+    public void postMessage(@NonNull StateContext context, @NonNull String message, @NonNull List<String> buttons,
+                            @NonNull String channel) {
         PostMessage action = new PostMessage(this, context, message, buttons, channel);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
@@ -222,7 +223,7 @@ public class ReactPlatform extends ChatPlatform {
      * @param context the current {@link StateContext}
      * @param message the message to post
      */
-    public void reply(StateContext context, String message) {
+    public void reply(@NonNull StateContext context, @NonNull String message) {
         Reply action = new Reply(this, context, message);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
@@ -236,7 +237,7 @@ public class ReactPlatform extends ChatPlatform {
      * @param message the message to post
      * @param buttons the list of button values to display to the user
      */
-    public void reply(StateContext context, String message, List<String> buttons) {
+    public void reply(@NonNull StateContext context, @NonNull String message, @NonNull List<String> buttons) {
         Reply action = new Reply(this, context, message, buttons);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
@@ -250,7 +251,7 @@ public class ReactPlatform extends ChatPlatform {
      * @param message the message to post
      * @param file    the {@link File} to post a link to
      */
-    public void replyFileMessage(StateContext context, String message, File file) {
+    public void replyFileMessage(@NonNull StateContext context, @NonNull String message, @NonNull File file) {
         ReplyFileMessage action = new ReplyFileMessage(this, context, message, file);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
@@ -263,7 +264,7 @@ public class ReactPlatform extends ChatPlatform {
      * @param context the current {@link StateContext}
      * @param file    the {@link File} to post a link to
      */
-    public void replyFileMessage(StateContext context, File file) {
+    public void replyFileMessage(@NonNull StateContext context, @NonNull File file) {
         ReplyFileMessage action = new ReplyFileMessage(this, context, file);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
@@ -276,7 +277,8 @@ public class ReactPlatform extends ChatPlatform {
      * @param link    the link to embed in the displayed card
      * @param img     the image to set in the card
      */
-    public void replyLinkSnippet(StateContext context, String title, String link, String img) {
+    public void replyLinkSnippet(@NonNull StateContext context, @NonNull String title, @NonNull String link,
+                                 @NonNull String img) {
         ReplyLinkSnippet action = new ReplyLinkSnippet(this, context, title, link, img);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
@@ -286,7 +288,7 @@ public class ReactPlatform extends ChatPlatform {
      *
      * @param context the current {@link StateContext}
      */
-    public void toggleDarkMode(StateContext context) {
+    public void toggleDarkMode(@NonNull StateContext context) {
         ToggleDarkMode action = new ToggleDarkMode(this, context);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
@@ -299,7 +301,7 @@ public class ReactPlatform extends ChatPlatform {
      * @param context the current {@link StateContext}
      * @param delay   the delay to wait for
      */
-    public void wait(StateContext context, int delay) {
+    public void wait(@NonNull StateContext context, int delay) {
         Wait action = new Wait(this, context, delay);
         RuntimeActionResult result = this.executeRuntimeAction(action);
     }
