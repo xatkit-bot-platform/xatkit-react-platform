@@ -24,17 +24,24 @@ import static java.util.Objects.isNull;
 public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
 
     /**
-     * Constructs a {@link ReactIntentProvider} from the provided {@code reactPlatform} and {@code configuration}.
-     * <p>
-     * This constructor registers the listeners to the socket server that receives user interactions (messages,
-     * button clicks, etc) and translates them into {@link RecognizedIntent}s using the {@link IntentRecognitionHelper}.
+     * Constructs a {@link ReactIntentProvider} and binds it to the provided {@code reactPlatform}.
      *
-     * @param reactPlatform the {@link ReactPlatform} containing this provider
-     * @param configuration the platform's {@link Configuration}
-     * @see IntentRecognitionHelper
+     * @param reactPlatform the {@link ReactPlatform} managing this provider
      */
-    public ReactIntentProvider(ReactPlatform reactPlatform, Configuration configuration) {
-        super(reactPlatform, configuration);
+    public ReactIntentProvider(ReactPlatform reactPlatform) {
+        super(reactPlatform);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method registers the listeners on the socker server to receive user interactions (messages, button
+     * clicks, etc) and translate them into {@link RecognizedIntent}s. Received interactions won't be translated
+     * until this method is invoked.
+     */
+    @Override
+    public void start(Configuration configuration) {
+        super.start(configuration);
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_MESSAGE.label,
                 UserMessageReceived.class, (socketIOClient, messageObject, ackRequest) -> {
                     Log.debug("Received message {0}", messageObject.getMessage());
@@ -65,7 +72,7 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                 (socketIOClient, initObject, ackRequest) -> {
                     String socketId = socketIOClient.getSessionId().toString();
                     XatkitSession session = this.runtimePlatform.getSessionForSocketId(socketId);
-                    if(isNull(session)) {
+                    if (isNull(session)) {
                         String conversationId = initObject.getConversationId();
                         Log.debug("Client requested conversation {0}", conversationId);
                         session = this.runtimePlatform.createSessionForConversation(socketId, conversationId);

@@ -1,18 +1,24 @@
 package com.xatkit.plugins.react.platform.io;
 
-import com.xatkit.core.platform.io.EventInstanceBuilder;
 import com.xatkit.core.platform.io.RuntimeEventProvider;
 import com.xatkit.core.session.XatkitSession;
+import com.xatkit.intent.Context;
+import com.xatkit.intent.ContextInstance;
+import com.xatkit.intent.ContextParameter;
+import com.xatkit.intent.ContextParameterValue;
+import com.xatkit.intent.EventDefinition;
 import com.xatkit.intent.EventInstance;
+import com.xatkit.intent.IntentFactory;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.react.platform.ReactPlatform;
+import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 import com.xatkit.plugins.react.platform.socket.action.InitConfirm;
 import com.xatkit.plugins.react.platform.socket.event.Init;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
-import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 import fr.inria.atlanmod.commons.log.Log;
 import org.apache.commons.configuration2.Configuration;
 
+import static com.xatkit.dsl.DSL.event;
 import static java.util.Objects.isNull;
 
 /**
@@ -20,23 +26,31 @@ import static java.util.Objects.isNull;
  * <p>
  * This class fires component life-cycle events, e.g. when the chat component is ready or when it disconnects from
  * the socket server.
- * <p>
- * Execution models using these events must listen to this provider in addition to the {@link ReactIntentProvider}
- * by adding the following <i>use</i> clause: {@code use provider ReactPlatform.ReactEventProvider}.
  */
 public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
 
     /**
-     * Constructs a {@link ReactEventProvider} from the provided {@code reactPlatform} and {@code configuration}.
-     * <p>
-     * This constructor registers dedicated listeners to the socket server that are triggered when a new client
-     * connects/is disconnected from it, and creates the associated {@link EventInstance}.
+     * Constructs a {@link ReactEventProvider} and binds it to the provided {@code reactPlatform}.
      *
-     * @param reactPlatform the {@link ReactPlatform} containing this provider
-     * @param configuration the platform's {@link Configuration}
+     * @param reactPlatform the {@link ReactPlatform} managing this provider
      */
-    public ReactEventProvider(ReactPlatform reactPlatform, Configuration configuration) {
-        super(reactPlatform, configuration);
+    public ReactEventProvider(ReactPlatform reactPlatform) {
+        super(reactPlatform);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method registers the listeners to the socker server to receive widget life-cycle notifications (client
+     * connection/disconnection, etc) and creates the corresponding {@link EventInstance}s. Received notifications
+     * won't be processed until this method is invoked.
+     *
+     * @see #ClientReady
+     * @see #ClientClosed
+     */
+    @Override
+    public void start(Configuration configuration) {
+        super.start(configuration);
         /*
          * Register the listener that creates the Client_Ready event.
          * This event is fired every time the client connects to the socket server.
@@ -44,32 +58,61 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
         this.runtimePlatform.getSocketIOServer().removeAllListeners(SocketEventTypes.INIT.label);
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.INIT.label, Init.class,
                 (socketIOClient, initObject, ackRequest) -> {
-            String socketId = socketIOClient.getSessionId().toString();
+                    String socketId = socketIOClient.getSessionId().toString();
 
-            XatkitSession session = this.runtimePlatform.getSessionForSocketId(socketId);
+                    XatkitSession session = this.runtimePlatform.getSessionForSocketId(socketId);
 
-            if(isNull(session)) {
-                String conversationId = initObject.getConversationId();
-                Log.debug("Client requested conversation {0}", conversationId);
-                session = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
-                session.setOrigin(initObject.getOrigin());
-                socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
-                        new InitConfirm(session.getSessionId()));
-            }
-            /*
-             * The session already exists, no need to send an ack event.
-             */
+                    if (isNull(session)) {
+                        String conversationId = initObject.getConversationId();
+                        Log.debug("Client requested conversation {0}", conversationId);
+                        session = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
+                        session.setOrigin(initObject.getOrigin());
+                        socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
+                                new InitConfirm(session.getSessionId()));
+                    }
+                    /*
+                     * The session already exists, no need to send an ack event.
+                     */
 
-            EventInstance eventInstance = EventInstanceBuilder.newBuilder(this.xatkitCore.getEventDefinitionRegistry())
-                    .setEventDefinitionName("Client_Ready")
-                    .setOutContextValue(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, socketId)
-                    .setOutContextValue("ready", "true")
-                    .setOutContextValue(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY, initObject.getHostname())
-                    .setOutContextValue(ReactUtils.REACT_URL_CONTEXT_KEY, initObject.getUrl())
-                    .setOutContextValue(ReactUtils.REACT_ORIGIN_CONTEXT_KEY, initObject.getOrigin())
-                    .build();
-            this.sendEventInstance(eventInstance, session);
-        });
+                    Context chatContext = ClientReady.getOutContext(ChatUtils.CHAT_CONTEXT_KEY);
+                    ContextParameter chatChannelParameter =
+                            chatContext.getContextParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
+                    Context reactContext = ClientReady.getOutContext(ReactUtils.REACT_CONTEXT_KEY);
+                    ContextParameter reactHostnameParameter =
+                            reactContext.getContextParameter(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY);
+                    ContextParameter reactUrlParameter =
+                            reactContext.getContextParameter(ReactUtils.REACT_URL_CONTEXT_KEY);
+                    ContextParameter reactOriginParameter =
+                            reactContext.getContextParameter(ReactUtils.REACT_ORIGIN_CONTEXT_KEY);
+
+                    EventInstance eventInstance = IntentFactory.eINSTANCE.createEventInstance();
+                    eventInstance.setDefinition(ClientReady);
+                    ContextInstance chatContextInstance = IntentFactory.eINSTANCE.createContextInstance();
+                    chatContextInstance.setDefinition(chatContext);
+                    eventInstance.getOutContextInstances().add(chatContextInstance);
+                    ContextParameterValue chatChannelValue = IntentFactory.eINSTANCE.createContextParameterValue();
+                    chatChannelValue.setContextParameter(chatChannelParameter);
+                    chatChannelValue.setValue(socketId);
+                    chatContextInstance.getValues().add(chatChannelValue);
+                    ContextInstance reactContextInstance = IntentFactory.eINSTANCE.createContextInstance();
+                    reactContextInstance.setDefinition(reactContext);
+                    eventInstance.getOutContextInstances().add(reactContextInstance);
+                    ContextParameterValue reactHostnameValue = IntentFactory.eINSTANCE.createContextParameterValue();
+                    reactHostnameValue.setContextParameter(reactHostnameParameter);
+                    reactHostnameValue.setValue(initObject.getHostname());
+                    reactContextInstance.getValues().add(reactHostnameValue);
+                    ContextParameterValue reactUrlValue = IntentFactory.eINSTANCE.createContextParameterValue();
+                    reactUrlValue.setContextParameter(reactUrlParameter);
+                    reactUrlValue.setValue(initObject.getUrl());
+                    reactContextInstance.getValues().add(reactUrlValue);
+                    ContextParameterValue reactOriginValue = IntentFactory.eINSTANCE.createContextParameterValue();
+                    reactOriginValue.setContextParameter(reactOriginParameter);
+                    reactOriginValue.setValue(initObject.getOrigin());
+                    reactContextInstance.getValues().add(reactOriginValue);
+
+                    this.sendEventInstance(eventInstance, session);
+
+                });
         /*
          * Register the listener that creates the Client_Closed event.
          * This event is fired every time the client disconnects from the socket server.
@@ -77,11 +120,20 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
         this.runtimePlatform.getSocketIOServer().addDisconnectListener(socketIOClient -> {
             String channel = socketIOClient.getSessionId().toString();
             XatkitSession session = this.runtimePlatform.getSessionForSocketId(channel);
-            EventInstance eventInstance = EventInstanceBuilder.newBuilder(this.xatkitCore.getEventDefinitionRegistry())
-                    .setEventDefinitionName("Client_Closed")
-                    .setOutContextValue(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, channel)
-                    .setOutContextValue("closed", "true")
-                    .build();
+
+            Context chatContext = ClientClosed.getOutContext(ChatUtils.CHAT_CONTEXT_KEY);
+            ContextParameter chatChannelParameter = chatContext.getContextParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
+
+            EventInstance eventInstance = IntentFactory.eINSTANCE.createEventInstance();
+            eventInstance.setDefinition(ClientClosed);
+            ContextInstance chatContextInstance = IntentFactory.eINSTANCE.createContextInstance();
+            chatContextInstance.setDefinition(chatContext);
+            eventInstance.getOutContextInstances().add(chatContextInstance);
+            ContextParameterValue chatChannelValue = IntentFactory.eINSTANCE.createContextParameterValue();
+            chatChannelValue.setContextParameter(chatChannelParameter);
+            chatChannelValue.setValue(channel);
+            chatContextInstance.getValues().add(chatChannelValue);
+
             this.sendEventInstance(eventInstance, session);
         });
     }
@@ -95,4 +147,23 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
          * Do nothing, the socket server is started asynchronously.
          */
     }
+
+    /**
+     * The {@link EventDefinition} that is fired when a client connects to the widget.
+     */
+    public static EventDefinition ClientReady = event("Client_Ready")
+            .context(ChatUtils.CHAT_CONTEXT_KEY)
+            .parameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
+            .context(ReactUtils.REACT_CONTEXT_KEY)
+            .parameter(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY)
+            .parameter(ReactUtils.REACT_URL_CONTEXT_KEY)
+            .parameter(ReactUtils.REACT_ORIGIN_CONTEXT_KEY)
+            .getEventDefinition();
+
+    /**
+     * The {@link EventDefinition} that is fired when a client connection is closed.
+     */
+    public static EventDefinition ClientClosed = event("Client_Closed")
+            .context(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
+            .getEventDefinition();
 }

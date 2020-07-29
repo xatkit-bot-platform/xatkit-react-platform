@@ -2,6 +2,7 @@ package com.xatkit.plugins.react.platform.action;
 
 import com.xatkit.core.platform.action.RuntimeAction;
 import com.xatkit.core.session.XatkitSession;
+import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import fr.inria.atlanmod.commons.log.Log;
 
@@ -20,13 +21,13 @@ public class Wait extends RuntimeAction<ReactPlatform> {
     /**
      * Constructs a new {@link Wait} with the provided {@code reactPlatform}, {@code session}, and {@code delay}.
      *
-     * @param reactPlatform the {@link ReactPlatform} containing this action
-     * @param session       the {@link XatkitSession} associated to this action
+     * @param platform the {@link ReactPlatform} containing this action
+     * @param context       the {@link StateContext} associated to this action
      * @param delay         the delay to wait
      * @throws IllegalArgumentException if the provided {@code delay} is lower or equal to {@code 0}
      */
-    public Wait(ReactPlatform reactPlatform, XatkitSession session, int delay) {
-        super(reactPlatform, session);
+    public Wait(ReactPlatform platform, StateContext context, int delay) {
+        super(platform, context);
         checkArgument(delay > 0, "Cannot construct a %s action with the provided delay %s, expecting a value greater " +
                 "or equal to 0", this.getClass().getSimpleName(), delay);
         this.delay = delay;

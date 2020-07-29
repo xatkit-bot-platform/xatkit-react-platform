@@ -3,11 +3,19 @@ package com.xatkit.plugins.react.platform;
 import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.xatkit.core.XatkitCore;
+import com.xatkit.core.platform.action.RuntimeActionResult;
 import com.xatkit.core.server.XatkitServerUtils;
 import com.xatkit.core.session.XatkitSession;
+import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
+import com.xatkit.plugins.react.platform.action.EnumerateList;
+import com.xatkit.plugins.react.platform.action.ItemizeList;
 import com.xatkit.plugins.react.platform.action.PostMessage;
 import com.xatkit.plugins.react.platform.action.Reply;
+import com.xatkit.plugins.react.platform.action.ReplyFileMessage;
+import com.xatkit.plugins.react.platform.action.ReplyLinkSnippet;
+import com.xatkit.plugins.react.platform.action.ToggleDarkMode;
+import com.xatkit.plugins.react.platform.action.Wait;
 import com.xatkit.plugins.react.platform.server.ReactRestEndpointsManager;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import fr.inria.atlanmod.commons.log.Log;
@@ -15,7 +23,9 @@ import lombok.NonNull;
 import org.apache.commons.configuration2.Configuration;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -28,15 +38,6 @@ import static java.util.Objects.nonNull;
  * <p>
  * This platform creates a server that accepts socket connexions from the client application. Messages are received
  * in real-time, and replies are sent to the client using a push mechanism.
- * <p>
- * This platform provides the following actions:
- * <ul>
- * <li>{@link Reply}: replies to a user input</li>
- * <li>{@link PostMessage}: post a message to a given channel (i.e. window running a xatkit-react instance)</li>
- * </ul>
- * <p>
- * This class is part of xatkit's core paltform, and can be used in an execution model by importing the
- * <i>ReactPlatform</i> package.
  */
 public class ReactPlatform extends ChatPlatform {
 
@@ -55,20 +56,16 @@ public class ReactPlatform extends ChatPlatform {
     private Map<String, String> socketToConversationMap = new HashMap<>();
 
     /**
-     * Constructs a new {@link ReactPlatform} from the provided {@link XatkitCore} and {@link Configuration}.
+     * {@inheritDoc}
      * <p>
-     * This constructor initializes the underlying socket server using the {@link ReactUtils#REACT_CLIENT_URL_KEY}
-     * property specified in the {@link Configuration}. If this property is not specified the {@link ReactPlatform}
-     * assumes that the page embedding the react client is served by the Xatkit server and initializes the socket
-     * server with the {@link XatkitServerUtils#SERVER_PUBLIC_URL_KEY} and {@link XatkitServerUtils#SERVER_PORT_KEY}
-     * properties.
-     *
-     * @param xatkitCore    the {@link XatkitCore} instance associated to this runtimePlatform
-     * @param configuration the platform's {@link Configuration} containing the port of the socket server
-     * @throws NullPointerException if the provided {@code xatkitCore} or {@code configuration} is {@code null}
+     * This method initializes the underlying socket server using the {@link ReactUtils#REACT_CLIENT_URL_KEY}
+     * property specified in the {@code configuration}. If this property is not specified the platform assumes that
+     * the page embedding the react client is served by the Xatkit server and initializes the socket server with
+     * {@link XatkitServerUtils#SERVER_PUBLIC_URL_KEY} and {@link XatkitServerUtils#SERVER_PORT_KEY} properties.
      */
-    public ReactPlatform(XatkitCore xatkitCore, Configuration configuration) {
-        super(xatkitCore, configuration);
+    @Override
+    public void start(@NonNull XatkitCore xatkitCore, @NonNull Configuration configuration) {
+        super.start(xatkitCore, configuration);
         /*
          * Register the shutdown hook first to make sure it is registered even if the constructor throws an exception.
          */
@@ -128,6 +125,183 @@ public class ReactPlatform extends ChatPlatform {
         ReactRestEndpointsManager restEndpointsManager =
                 new ReactRestEndpointsManager(this.xatkitCore.getXatkitServer(), configuration);
         restEndpointsManager.registerRestEndpoints();
+    }
+
+    /**
+     * Formats the provided {@code list} into a markdown enumeration.
+     * <p>
+     * This method accepts any {@link List} and relies on the {@code toString} implementation of its elements.
+     *
+     * @param context the current {@link StateContext}
+     * @param list    the {@link List} to format
+     * @return the enumeration formatted in markdown
+     */
+    public String enumerateList(@NonNull StateContext context, @NonNull List<?> list) {
+        EnumerateList action = new EnumerateList(this, context, list);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+        return (String) result.getResult();
+    }
+
+    /**
+     * Formats the provided {@code list} into a markdown enumeration using the provided {@code formatterName}.
+     * <p>
+     * The selected formatter is used to compute a string representation of each list element.
+     *
+     * @param context       the current {@link StateContext}
+     * @param list          the {@link List} to format
+     * @param formatterName the name of the formatter to use
+     * @return the enumeration formatted in markdown
+     */
+    public String enumerateList(@NonNull StateContext context, @NonNull List<?> list, @Nullable String formatterName) {
+        EnumerateList action = new EnumerateList(this, context, list, formatterName);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+        return (String) result.getResult();
+    }
+
+    /**
+     * Formats the provided {@code list} into a markdown item list.
+     * <p>
+     * This method accepts any {@link List} and relies on the {@code toString} implementation of its elements.
+     *
+     * @param context the current {@link StateContext}
+     * @param list    the {@link List} to format
+     * @return the item list formatted in markdown
+     */
+    public String itemizeList(@NonNull StateContext context, @NonNull List<?> list) {
+        ItemizeList action = new ItemizeList(this, context, list);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+        return (String) result.getResult();
+    }
+
+    /**
+     * Formats the provided {@code list} into a markdown item list using the provided {@code formatterName}.
+     * <p>
+     * The selected formatter is used to compute the string representation of each list element.
+     *
+     * @param context       the current {@link StateContext}
+     * @param list          the {@link List} to format
+     * @param formatterName the name of the formatter to use
+     * @return the item list formatted in markdown
+     */
+    public String itemizeList(@NonNull StateContext context, @NonNull List<?> list, @Nullable String formatterName) {
+        ItemizeList action = new ItemizeList(this, context, list);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+        return (String) result.getResult();
+    }
+
+    /**
+     * Posts the provided {@code message} in the given {@code channel}.
+     *
+     * @param context the current {@link StateContext}
+     * @param message the message to post
+     * @param channel the socket identifier to post the message to
+     */
+    public void postMessage(StateContext context, String message, String channel) {
+        PostMessage action = new PostMessage(this, context, message, channel);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+    }
+
+    /**
+     * Posts the provided {@code message} with the provided {@code buttons} in the given {@code channel}.
+     *
+     * @param context the current {@link StateContext}
+     * @param message the message to post
+     * @param buttons the list of button values to display to the user
+     * @param channel the socket identifier to post the message to
+     */
+    public void postMessage(StateContext context, String message, List<String> buttons, String channel) {
+        PostMessage action = new PostMessage(this, context, message, buttons, channel);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+    }
+
+    /**
+     * Posts the provided {@code message} in the current channel.
+     * <p>
+     * The current channel is extracted from the provided {@code context}.
+     *
+     * @param context the current {@link StateContext}
+     * @param message the message to post
+     */
+    public void reply(StateContext context, String message) {
+        Reply action = new Reply(this, context, message);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+    }
+
+    /**
+     * Posts the provided {@code message} with the provided {@code buttons} in the current channel.
+     * <p>
+     * The current channel is extracted from the provided {@code context}.
+     *
+     * @param context the current {@link StateContext}
+     * @param message the message to post
+     * @param buttons the list of button values to display to the user
+     */
+    public void reply(StateContext context, String message, List<String> buttons) {
+        Reply action = new Reply(this, context, message, buttons);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+    }
+
+    /**
+     * Posts the provided {@code message} with a link to the provided {@code file} in the current channel.
+     * <p>
+     * This action takes care of uploading the file and creating a public URL for it.
+     *
+     * @param context the current {@link StateContext}
+     * @param message the message to post
+     * @param file    the {@link File} to post a link to
+     */
+    public void replyFileMessage(StateContext context, String message, File file) {
+        ReplyFileMessage action = new ReplyFileMessage(this, context, message, file);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+    }
+
+    /**
+     * Posts a link to the provided {@code file} in the current channel.
+     * <p>
+     * This action takes care of uploading the file and creating a public URL for it.
+     *
+     * @param context the current {@link StateContext}
+     * @param file    the {@link File} to post a link to
+     */
+    public void replyFileMessage(StateContext context, File file) {
+        ReplyFileMessage action = new ReplyFileMessage(this, context, file);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+    }
+
+    /**
+     * Posts a card pointing to the provided {@code link} in the current channel.
+     *
+     * @param context the current {@link StateContext}
+     * @param title   the title of the card to display to the user
+     * @param link    the link to embed in the displayed card
+     * @param img     the image to set in the card
+     */
+    public void replyLinkSnippet(StateContext context, String title, String link, String img) {
+        ReplyLinkSnippet action = new ReplyLinkSnippet(this, context, title, link, img);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+    }
+
+    /**
+     * Toggles the dark mode in the client widget.
+     *
+     * @param context the current {@link StateContext}
+     */
+    public void toggleDarkMode(StateContext context) {
+        ToggleDarkMode action = new ToggleDarkMode(this, context);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
+    }
+
+    /**
+     * Tells the client widget to wait for a given {@code delay}.
+     * <p>
+     * The client widget can use this information to display loading dots or notify the user about the delay.
+     *
+     * @param context the current {@link StateContext}
+     * @param delay   the delay to wait for
+     */
+    public void wait(StateContext context, int delay) {
+        Wait action = new Wait(this, context, delay);
+        RuntimeActionResult result = this.executeRuntimeAction(action);
     }
 
     /**

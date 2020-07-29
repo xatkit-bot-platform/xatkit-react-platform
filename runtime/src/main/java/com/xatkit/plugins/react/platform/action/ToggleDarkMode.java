@@ -2,6 +2,7 @@ package com.xatkit.plugins.react.platform.action;
 
 import com.xatkit.core.platform.action.RuntimeAction;
 import com.xatkit.core.session.XatkitSession;
+import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 
@@ -17,11 +18,11 @@ public class ToggleDarkMode extends RuntimeAction<ReactPlatform> {
     /**
      * Constructs a new {@link ToggleDarkMode} with the provided {@code reactPlatform} and {@code session}.
      *
-     * @param reactPlatform the {@link ReactPlatform} containing this action
-     * @param session       the {@link XatkitSession} associated to this action
+     * @param platform the {@link ReactPlatform} containing this action
+     * @param context       the {@link StateContext} associated to this action
      */
-    public ToggleDarkMode(ReactPlatform reactPlatform, XatkitSession session) {
-        super(reactPlatform, session);
+    public ToggleDarkMode(ReactPlatform platform, StateContext context) {
+        super(platform, context);
     }
 
     /**
@@ -31,7 +32,7 @@ public class ToggleDarkMode extends RuntimeAction<ReactPlatform> {
      */
     @Override
     protected Object compute() {
-        this.runtimePlatform.getSocketIOServer().getClient(UUID.fromString(Reply.getChannel(session.getRuntimeContexts())))
+        this.runtimePlatform.getSocketIOServer().getClient(UUID.fromString(Reply.getChannel(context)))
                 .sendEvent(SocketEventTypes.TOGGLE_DARK_MODE.label);
         return null;
     }
