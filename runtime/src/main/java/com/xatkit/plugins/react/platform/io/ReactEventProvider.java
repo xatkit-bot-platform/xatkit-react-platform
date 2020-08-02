@@ -89,6 +89,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                     eventInstance.setDefinition(ClientReady);
                     ContextInstance chatContextInstance = IntentFactory.eINSTANCE.createContextInstance();
                     chatContextInstance.setDefinition(chatContext);
+                    chatContextInstance.setLifespanCount(chatContext.getLifeSpan());
                     eventInstance.getOutContextInstances().add(chatContextInstance);
                     ContextParameterValue chatChannelValue = IntentFactory.eINSTANCE.createContextParameterValue();
                     chatChannelValue.setContextParameter(chatChannelParameter);
@@ -96,6 +97,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                     chatContextInstance.getValues().add(chatChannelValue);
                     ContextInstance reactContextInstance = IntentFactory.eINSTANCE.createContextInstance();
                     reactContextInstance.setDefinition(reactContext);
+                    reactContextInstance.setLifespanCount(reactContext.getLifeSpan());
                     eventInstance.getOutContextInstances().add(reactContextInstance);
                     ContextParameterValue reactHostnameValue = IntentFactory.eINSTANCE.createContextParameterValue();
                     reactHostnameValue.setContextParameter(reactHostnameParameter);
@@ -128,6 +130,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
             eventInstance.setDefinition(ClientClosed);
             ContextInstance chatContextInstance = IntentFactory.eINSTANCE.createContextInstance();
             chatContextInstance.setDefinition(chatContext);
+            chatContextInstance.setLifespanCount(chatContext.getLifeSpan());
             eventInstance.getOutContextInstances().add(chatContextInstance);
             ContextParameterValue chatChannelValue = IntentFactory.eINSTANCE.createContextParameterValue();
             chatChannelValue.setContextParameter(chatChannelParameter);
@@ -153,8 +156,10 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
      */
     public static EventDefinition ClientReady = event("Client_Ready")
             .context(ChatUtils.CHAT_CONTEXT_KEY)
+            .lifespan(1)
             .parameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
             .context(ReactUtils.REACT_CONTEXT_KEY)
+            .lifespan(1)
             .parameter(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY)
             .parameter(ReactUtils.REACT_URL_CONTEXT_KEY)
             .parameter(ReactUtils.REACT_ORIGIN_CONTEXT_KEY)
@@ -165,5 +170,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
      */
     public static EventDefinition ClientClosed = event("Client_Closed")
             .context(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
+            .lifespan(1)
+            .parameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
             .getEventDefinition();
 }
