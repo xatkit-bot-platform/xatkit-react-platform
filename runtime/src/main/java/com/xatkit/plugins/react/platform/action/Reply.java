@@ -39,7 +39,7 @@ public class Reply extends PostMessage {
      * @throws IllegalArgumentException if the retrieved channel is not a {@link String}
      */
     public static String getChannel(@NonNull StateContext context) {
-        Object channelValue = context.getNlpContext().getOrDefault(ReactUtils.REACT_CONTEXT_KEY,
+        Object channelValue = context.getNlpContext().getOrDefault(ChatUtils.CHAT_CONTEXT_KEY,
                 Collections.emptyMap()).get(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
         checkNotNull(channelValue, "Cannot retrieve the React channel from the context, expected a non null " +
                 ChatUtils.CHAT_CHANNEL_CONTEXT_KEY + " value, found %s", channelValue);
