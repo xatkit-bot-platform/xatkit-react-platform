@@ -138,7 +138,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public String enumerateList(@NonNull StateContext context, @NonNull List<?> list) {
         EnumerateList action = new EnumerateList(this, context, list);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
         return (String) result.getResult();
     }
 
@@ -154,7 +154,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public String enumerateList(@NonNull StateContext context, @NonNull List<?> list, @Nullable String formatterName) {
         EnumerateList action = new EnumerateList(this, context, list, formatterName);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
         return (String) result.getResult();
     }
 
@@ -169,7 +169,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public String itemizeList(@NonNull StateContext context, @NonNull List<?> list) {
         ItemizeList action = new ItemizeList(this, context, list);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
         return (String) result.getResult();
     }
 
@@ -185,7 +185,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public String itemizeList(@NonNull StateContext context, @NonNull List<?> list, @Nullable String formatterName) {
         ItemizeList action = new ItemizeList(this, context, list, formatterName);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
         return (String) result.getResult();
     }
 
@@ -198,7 +198,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public void postMessage(@NonNull StateContext context, @NonNull String message, @NonNull String channel) {
         PostMessage action = new PostMessage(this, context, message, channel);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
@@ -212,7 +212,7 @@ public class ReactPlatform extends ChatPlatform {
     public void postMessage(@NonNull StateContext context, @NonNull String message, @NonNull List<String> buttons,
                             @NonNull String channel) {
         PostMessage action = new PostMessage(this, context, message, buttons, channel);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
@@ -225,7 +225,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public void reply(@NonNull StateContext context, @NonNull String message) {
         Reply action = new Reply(this, context, message);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
@@ -239,7 +239,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public void reply(@NonNull StateContext context, @NonNull String message, @NonNull List<String> buttons) {
         Reply action = new Reply(this, context, message, buttons);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
@@ -253,7 +253,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public void replyFileMessage(@NonNull StateContext context, @NonNull String message, @NonNull File file) {
         ReplyFileMessage action = new ReplyFileMessage(this, context, message, file);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
@@ -266,7 +266,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public void replyFileMessage(@NonNull StateContext context, @NonNull File file) {
         ReplyFileMessage action = new ReplyFileMessage(this, context, file);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
@@ -280,7 +280,7 @@ public class ReactPlatform extends ChatPlatform {
     public void replyLinkSnippet(@NonNull StateContext context, @NonNull String title, @NonNull String link,
                                  @NonNull String img) {
         ReplyLinkSnippet action = new ReplyLinkSnippet(this, context, title, link, img);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
@@ -290,7 +290,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public void toggleDarkMode(@NonNull StateContext context) {
         ToggleDarkMode action = new ToggleDarkMode(this, context);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
@@ -303,7 +303,7 @@ public class ReactPlatform extends ChatPlatform {
      */
     public void wait(@NonNull StateContext context, int delay) {
         Wait action = new Wait(this, context, delay);
-        RuntimeActionResult result = this.executeRuntimeAction(action);
+        RuntimeActionResult result = action.call();
     }
 
     /**
