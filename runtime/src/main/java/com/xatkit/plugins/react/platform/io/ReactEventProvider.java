@@ -68,7 +68,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                         session = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
                         session.setOrigin(initObject.getOrigin());
                         socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
-                                new InitConfirm(session.getSessionId()));
+                                new InitConfirm(session.getContextId()));
                     }
                     /*
                      * The session already exists, no need to send an ack event.
