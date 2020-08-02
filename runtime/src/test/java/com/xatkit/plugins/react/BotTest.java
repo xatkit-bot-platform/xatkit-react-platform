@@ -8,11 +8,11 @@ import com.xatkit.Xatkit;
 public class BotTest {
 
     public static void main(String[] args) {
-        Xatkit.main(new String[]{"<Path to your .properties file>"});
-        try {
-            Thread.sleep(10000000);
-        }catch(InterruptedException e) {
-            e.printStackTrace();
-        }
+//        Xatkit.main(new String[]{"<Path to your .properties file>"});
+//        try {
+//            Thread.sleep(10000000);
+//        }catch(InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }
