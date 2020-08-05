@@ -2,6 +2,7 @@ package com.xatkit.plugins.react.platform.io;
 
 import com.xatkit.core.platform.io.RuntimeEventProvider;
 import com.xatkit.core.session.XatkitSession;
+import com.xatkit.execution.StateContext;
 import com.xatkit.intent.Context;
 import com.xatkit.intent.ContextInstance;
 import com.xatkit.intent.ContextParameter;
@@ -60,15 +61,15 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                 (socketIOClient, initObject, ackRequest) -> {
                     String socketId = socketIOClient.getSessionId().toString();
 
-                    XatkitSession session = this.runtimePlatform.getSessionForSocketId(socketId);
+                    StateContext context = this.runtimePlatform.getSessionForSocketId(socketId);
 
-                    if (isNull(session)) {
+                    if (isNull(context)) {
                         String conversationId = initObject.getConversationId();
                         Log.debug("Client requested conversation {0}", conversationId);
-                        session = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
-                        session.setOrigin(initObject.getOrigin());
+                        context = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
+                        context.setOrigin(initObject.getOrigin());
                         socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
-                                new InitConfirm(session.getContextId()));
+                                new InitConfirm(context.getContextId()));
                     }
                     /*
                      * The session already exists, no need to send an ack event.
@@ -112,7 +113,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                     reactOriginValue.setValue(initObject.getOrigin());
                     reactContextInstance.getValues().add(reactOriginValue);
 
-                    this.sendEventInstance(eventInstance, session);
+                    this.sendEventInstance(eventInstance, context);
 
                 });
         /*
@@ -121,7 +122,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
          */
         this.runtimePlatform.getSocketIOServer().addDisconnectListener(socketIOClient -> {
             String channel = socketIOClient.getSessionId().toString();
-            XatkitSession session = this.runtimePlatform.getSessionForSocketId(channel);
+            StateContext context = this.runtimePlatform.getSessionForSocketId(channel);
 
             Context chatContext = ClientClosed.getOutContext(ChatUtils.CHAT_CONTEXT_KEY);
             ContextParameter chatChannelParameter = chatContext.getContextParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
@@ -137,7 +138,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
             chatChannelValue.setValue(channel);
             chatContextInstance.getValues().add(chatChannelValue);
 
-            this.sendEventInstance(eventInstance, session);
+            this.sendEventInstance(eventInstance, context);
         });
     }
 

@@ -2,6 +2,7 @@ package com.xatkit.plugins.react.platform.io;
 
 import com.xatkit.core.platform.io.IntentRecognitionHelper;
 import com.xatkit.core.session.XatkitSession;
+import com.xatkit.execution.StateContext;
 import com.xatkit.intent.RecognizedIntent;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.chat.platform.io.ChatIntentProvider;
@@ -49,11 +50,11 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     String username = messageObject.getUsername();
                     String channel = socketIOClient.getSessionId().toString();
                     String rawMessage = messageObject.getMessage();
-                    XatkitSession session = this.getRuntimePlatform().getSessionForSocketId(channel);
+                    StateContext context = this.getRuntimePlatform().getSessionForSocketId(channel);
                     RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(rawMessage,
-                            session, this.getRuntimePlatform().getXatkitCore());
-                    setSessionContexts(session, username, channel, rawMessage);
-                    this.sendEventInstance(recognizedIntent, session);
+                            context, this.getRuntimePlatform().getXatkitCore());
+                    setSessionContexts(context, username, channel, rawMessage);
+                    this.sendEventInstance(recognizedIntent, context);
                 });
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_BUTTON_CLICK.label,
                 UserQuickButtonSelected.class, ((socketIOClient, quickButtonEventObject, ackRequest) -> {
@@ -62,23 +63,23 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     String username = quickButtonEventObject.getUsername();
                     String channel = socketIOClient.getSessionId().toString();
                     String rawMessage = quickButtonEventObject.getSelectedValue();
-                    XatkitSession session = this.getRuntimePlatform().getSessionForSocketId(channel);
+                    StateContext context = this.getRuntimePlatform().getSessionForSocketId(channel);
                     RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(rawMessage,
-                            session, this.getRuntimePlatform().getXatkitCore());
-                    setSessionContexts(session, username, channel, rawMessage);
-                    this.sendEventInstance(recognizedIntent, session);
+                            context, this.getRuntimePlatform().getXatkitCore());
+                    setSessionContexts(context, username, channel, rawMessage);
+                    this.sendEventInstance(recognizedIntent, context);
                 }));
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.INIT.label, Init.class,
                 (socketIOClient, initObject, ackRequest) -> {
                     String socketId = socketIOClient.getSessionId().toString();
-                    XatkitSession session = this.runtimePlatform.getSessionForSocketId(socketId);
-                    if (isNull(session)) {
+                    StateContext context = this.runtimePlatform.getSessionForSocketId(socketId);
+                    if (isNull(context)) {
                         String conversationId = initObject.getConversationId();
                         Log.debug("Client requested conversation {0}", conversationId);
-                        session = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
-                        session.setOrigin(initObject.getOrigin());
+                        context = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
+                        context.setOrigin(initObject.getOrigin());
                         socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
-                                new InitConfirm(session.getContextId()));
+                                new InitConfirm(context.getContextId()));
                     }
                     /*
                      * The session already exists, no need to send an ack event.
@@ -93,12 +94,16 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
      * This method sets both the {@code react} context parameters (from {@link ReactUtils}) and the {@code chat} one
      * (from {@link ChatUtils}).
      *
-     * @param session    the {@link XatkitSession} to set the contexts of
+     * @param context    the {@link StateContext} to set the contexts of
      * @param username   the username value to set in the session
      * @param channel    the channel value to set in the session
      * @param rawMessage the raw message value to set in the session
      */
-    private void setSessionContexts(XatkitSession session, String username, String channel, String rawMessage) {
+    private void setSessionContexts(StateContext context, String username, String channel, String rawMessage) {
+        /*
+         * TODO remove this cast, this method should handle any StateContext.
+         */
+        XatkitSession session = (XatkitSession) context;
         session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
                 ReactUtils.CHAT_USERNAME_CONTEXT_KEY, username);
         session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
