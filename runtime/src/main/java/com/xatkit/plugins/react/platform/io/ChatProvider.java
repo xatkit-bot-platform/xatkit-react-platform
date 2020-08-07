@@ -1,7 +1,6 @@
 package com.xatkit.plugins.react.platform.io;
 
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import org.apache.commons.configuration2.Configuration;
 
 /**
  * A generic React {@link com.xatkit.plugins.chat.platform.io.ChatIntentProvider}.
@@ -14,12 +13,11 @@ import org.apache.commons.configuration2.Configuration;
 public class ChatProvider extends ReactIntentProvider {
 
     /**
-     * Constructs a new {@link ChatProvider} from the provided {@code runtimePlatform} and {@code configuration}.
+     * Constructs a {@link ChatProvider} and binds it to the provided {@code reactPlatform}.
      *
-     * @param runtimePlatform the {@link ReactPlatform} containing this {@link ChatProvider}
-     * @param configuration   the {@link Configuration} used to initialize the {@link ReactPlatform}
+     * @param reactPlatform the {@link ReactPlatform} managing this provider
      */
-    public ChatProvider(ReactPlatform runtimePlatform, Configuration configuration) {
-        super(runtimePlatform, configuration);
+    public ChatProvider(ReactPlatform reactPlatform) {
+        super(reactPlatform);
     }
 }

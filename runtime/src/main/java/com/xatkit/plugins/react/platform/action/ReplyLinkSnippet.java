@@ -2,9 +2,11 @@ package com.xatkit.plugins.react.platform.action;
 
 import com.xatkit.core.platform.action.RuntimeAction;
 import com.xatkit.core.session.XatkitSession;
+import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
 import com.xatkit.plugins.react.platform.socket.action.SendLinkSnippet;
+import lombok.NonNull;
 
 import java.util.UUID;
 
@@ -32,14 +34,15 @@ public class ReplyLinkSnippet extends RuntimeAction<ReactPlatform> {
      * Constructs a new {@link ReplyLinkSnippet} with the provided {@code reactPlatform}, {@code xatkitSession},
      * {@code title}, {@code link}, and {@code img}
      *
-     * @param reactPlatform the {@link ReactPlatform} containing this action
-     * @param session       the {@link XatkitSession} associated to this action
+     * @param platform the {@link ReactPlatform} containing this action
+     * @param context       the {@link StateContext} associated to this action
      * @param title         the title of the snippet to display
      * @param link          the link of the snippet
      * @param img           the image of the snippet
      */
-    public ReplyLinkSnippet(ReactPlatform reactPlatform, XatkitSession session, String title, String link, String img) {
-        super(reactPlatform, session);
+    public ReplyLinkSnippet(@NonNull ReactPlatform platform, @NonNull StateContext context, @NonNull String title,
+                            @NonNull String link, @NonNull String img) {
+        super(platform, context);
         this.title = title;
         this.link = link;
         this.img = img;
@@ -52,7 +55,7 @@ public class ReplyLinkSnippet extends RuntimeAction<ReactPlatform> {
      */
     @Override
     protected Object compute() {
-        this.runtimePlatform.getSocketIOServer().getClient(UUID.fromString(Reply.getChannel(session.getRuntimeContexts())))
+        this.runtimePlatform.getSocketIOServer().getClient(UUID.fromString(Reply.getChannel(context)))
                 .sendEvent(SocketEventTypes.LINK_SNIPPET.label, new SendLinkSnippet(this.title, this.link, this.img));
         return null;
     }

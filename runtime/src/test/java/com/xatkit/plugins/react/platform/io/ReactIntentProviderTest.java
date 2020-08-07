@@ -37,11 +37,11 @@ public class ReactIntentProviderTest extends AbstractEventProviderTest<ReactInte
 
     @Test(expected = NullPointerException.class)
     public void constructNullPlatform() {
-        provider = new ReactIntentProvider(null, new BaseConfiguration());
+        provider = new ReactIntentProvider(null);
     }
 
     @Override
     protected ReactPlatform getPlatform() {
-        return new ReactPlatform(mockedXatkitCore, new BaseConfiguration());
+        return new ReactPlatform();
     }
 }

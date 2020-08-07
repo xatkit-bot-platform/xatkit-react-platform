@@ -3,9 +3,11 @@ package com.xatkit.plugins.react.platform.action;
 import com.xatkit.core.platform.action.RuntimeMessageAction;
 import com.xatkit.core.session.RuntimeContexts;
 import com.xatkit.core.session.XatkitSession;
+import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
+import lombok.NonNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,16 +32,15 @@ public class Reply extends PostMessage {
      * {@link ReactUtils#REACT_CONTEXT_KEY}.{@link ReactUtils#CHAT_CHANNEL_CONTEXT_KEY}. Note that if the provided
      * {@link RuntimeContexts} does not contain the requested value a {@link NullPointerException} is thrown.
      *
-     * @param context the {@link RuntimeContexts} to retrieve the xatkit-react channel from
+     * @param context the {@link StateContext} to retrieve the xatkit-react channel from
      * @return the xatkit-react channel associated to the user input
      * @throws NullPointerException     if the provided {@code context} is {@code null}, or if it does not contain the
      *                                  channel information
      * @throws IllegalArgumentException if the retrieved channel is not a {@link String}
      */
-    public static String getChannel(RuntimeContexts context) {
-        checkNotNull(context, "Cannot retrieve the channel from the provided context %s", context);
-        Object channelValue = context.getContextValue(ReactUtils.REACT_CONTEXT_KEY,
-                ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
+    public static String getChannel(@NonNull StateContext context) {
+        Object channelValue = context.getNlpContext().getOrDefault(ChatUtils.CHAT_CONTEXT_KEY,
+                Collections.emptyMap()).get(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
         checkNotNull(channelValue, "Cannot retrieve the React channel from the context, expected a non null " +
                 ChatUtils.CHAT_CHANNEL_CONTEXT_KEY + " value, found %s", channelValue);
         checkArgument(channelValue instanceof String, "Invalid React channel type, expected %s, found %s",
@@ -52,28 +53,29 @@ public class Reply extends PostMessage {
      * <p>
      * This constructor is similar to {@code new Reply(runtimePlatform, session, message, Collections.emptyList())}.
      *
-     * @param reactPlatform the {@link ReactPlatform} containing this action
-     * @param session       the {@link XatkitSession} associated to this action
-     * @param message       the message to post
+     * @param platform the {@link ReactPlatform} containing this action
+     * @param context  the {@link StateContext} associated to this action
+     * @param message  the message to post
      */
-    public Reply(ReactPlatform reactPlatform, XatkitSession session, String message) {
-        this(reactPlatform, session, message, Collections.emptyList());
+    public Reply(@NonNull ReactPlatform platform, @NonNull StateContext context, @NonNull String message) {
+        this(platform, context, message, Collections.emptyList());
     }
 
     /**
      * Constructs a new {@link Reply} with the provided {@code reactPlatform}, {@code session}, {@code buttons}, and
      * {@code message}.
      *
-     * @param reactPlatform the {@link ReactPlatform} containing this action
-     * @param session       the {@link XatkitSession} associated to this action
-     * @param message       the message to post
-     * @param buttons       the quick message buttons to display with the message
+     * @param platform the {@link ReactPlatform} containing this action
+     * @param context  the {@link StateContext} associated to this action
+     * @param message  the message to post
+     * @param buttons  the quick message buttons to display with the message
      * @throws NullPointerException     if the provided {@code reactPlatform} or {@code session} is {@code null}
      * @throws IllegalArgumentException if the provided {@code message} is {@code null} or empty
-     * @see #getChannel(RuntimeContexts)
+     * @see #getChannel(StateContext)
      * @see PostMessage
      */
-    public Reply(ReactPlatform reactPlatform, XatkitSession session, String message, List<String> buttons) {
-        super(reactPlatform, session, message, buttons, getChannel(session.getRuntimeContexts()));
+    public Reply(@NonNull ReactPlatform platform, @NonNull StateContext context, @NonNull String message,
+                 @NonNull List<String> buttons) {
+        super(platform, context, message, buttons, getChannel(context));
     }
 }
