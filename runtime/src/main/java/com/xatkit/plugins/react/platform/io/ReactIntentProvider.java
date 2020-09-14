@@ -52,7 +52,7 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     String rawMessage = messageObject.getMessage();
                     StateContext context = this.getRuntimePlatform().getSessionForSocketId(channel);
                     RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(rawMessage,
-                            context, this.getRuntimePlatform().getXatkitCore());
+                            context, this.getRuntimePlatform().getXatkitBot());
                     setSessionContexts(context, username, channel, rawMessage);
                     this.sendEventInstance(recognizedIntent, context);
                 });
@@ -65,7 +65,7 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     String rawMessage = quickButtonEventObject.getSelectedValue();
                     StateContext context = this.getRuntimePlatform().getSessionForSocketId(channel);
                     RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(rawMessage,
-                            context, this.getRuntimePlatform().getXatkitCore());
+                            context, this.getRuntimePlatform().getXatkitBot());
                     setSessionContexts(context, username, channel, rawMessage);
                     this.sendEventInstance(recognizedIntent, context);
                 }));

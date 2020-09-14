@@ -27,12 +27,7 @@ public class ItemizeList extends FormatList<ReactPlatform> {
      * @param list     the {@link List} to format as a set of items
      */
     public ItemizeList(@NonNull ReactPlatform platform, @NonNull StateContext context, @NonNull List<?> list) {
-        super(platform, context, list, null);
-    }
-
-    public ItemizeList(@NonNull ReactPlatform platform, @NonNull StateContext context, @NonNull List<?> list,
-                       @Nullable String formatterName) {
-        super(platform, context, list, formatterName);
+        super(platform, context, list);
     }
 
     /**
@@ -48,7 +43,7 @@ public class ItemizeList extends FormatList<ReactPlatform> {
             return "";
         } else {
             return "- " + String.join("  \n- ",
-                    list.stream().map(o -> formatter.format(o))
+                    list.stream().map(Object::toString)
                             .collect(Collectors.toList())) +
                     "  \n";
         }

@@ -26,12 +26,7 @@ public class EnumerateList extends FormatList<ReactPlatform> {
      * @param list     the {@link List} to format as a set of items
      */
     public EnumerateList(@NonNull ReactPlatform platform, @NonNull StateContext context, @NonNull List<?> list) {
-        super(platform, context, list, null);
-    }
-
-    public EnumerateList(@NonNull ReactPlatform platform, @NonNull StateContext context, @NonNull List<?> list,
-                         @Nullable String formatterName) {
-        super(platform, context, list, formatterName);
+        super(platform, context, list);
     }
 
     /**
@@ -48,7 +43,7 @@ public class EnumerateList extends FormatList<ReactPlatform> {
             sb.append("[")
                     .append(i)
                     .append("] ")
-                    .append(formatter.format(list.get(i)))
+                    .append(list.get(i).toString())
                     .append("  \n");
         }
         return sb.toString();

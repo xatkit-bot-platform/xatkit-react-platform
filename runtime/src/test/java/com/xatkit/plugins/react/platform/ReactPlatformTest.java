@@ -22,23 +22,13 @@ public class ReactPlatformTest extends AbstractPlatformTest<ReactPlatform> {
     public void setUp() {
         super.setUp();
         mockedXatkitServer = mock(XatkitServer.class);
-        when(mockedXatkitCore.getXatkitServer()).thenReturn(mockedXatkitServer);
+        when(mockedXatkitBot.getXatkitServer()).thenReturn(mockedXatkitServer);
     }
-
-//    @Test(expected = NullPointerException.class)
-//    public void constructNullXatkitCore() {
-//        platform = new ReactPlatform(null, new BaseConfiguration());
-//    }
-
-//    @Test(expected = NullPointerException.class)
-//    public void constructNullConfiguration() {
-//        platform = new ReactPlatform(mockedXatkitCore, null);
-//    }
 
     @Test
     public void constructEmptyConfiguration() {
         platform = new ReactPlatform();
-        platform.start(mockedXatkitCore, new BaseConfiguration());
+        platform.start(mockedXatkitBot, new BaseConfiguration());
         Configuration configuration = checkAndGetConfiguration(platform);
         assertThat(configuration.getOrigin()).as("Origin is null").isNull();
         assertThat(configuration.getPort()).as("Port is the default one specified in ReactUtils")
@@ -51,7 +41,7 @@ public class ReactPlatformTest extends AbstractPlatformTest<ReactPlatform> {
         String origin = "http://www.example.com:1234";
         platformConfiguration.addProperty(ReactUtils.REACT_CLIENT_URL_KEY, origin);
         platform = new ReactPlatform();
-        platform.start(mockedXatkitCore, platformConfiguration);
+        platform.start(mockedXatkitBot, platformConfiguration);
         Configuration configuration = checkAndGetConfiguration(platform);
         assertThat(configuration.getOrigin()).as("Origin is the one provided in the configuration").isEqualTo(origin);
         assertThat(configuration.getPort()).as("Port is the default one specified in ReactUtils")
@@ -66,7 +56,7 @@ public class ReactPlatformTest extends AbstractPlatformTest<ReactPlatform> {
         platformConfiguration.addProperty(XatkitServerUtils.SERVER_PUBLIC_URL_KEY, customXatkitServerURL);
         platformConfiguration.addProperty(XatkitServerUtils.SERVER_PORT_KEY, customXatkitServerPort);
         platform = new ReactPlatform();
-        platform.start(mockedXatkitCore, platformConfiguration);
+        platform.start(mockedXatkitBot, platformConfiguration);
         Configuration configuration = checkAndGetConfiguration(platform);
         assertThat(configuration.getOrigin()).as("Origin is null").isNull();
         assertThat(configuration.getPort()).as("Port is the default one specified in ReactUtils")
@@ -79,7 +69,7 @@ public class ReactPlatformTest extends AbstractPlatformTest<ReactPlatform> {
         int reactPort = 1234;
         platformConfiguration.addProperty(ReactUtils.REACT_SERVER_PORT_KEY, reactPort);
         platform = new ReactPlatform();
-        platform.start(mockedXatkitCore, platformConfiguration);
+        platform.start(mockedXatkitBot, platformConfiguration);
         Configuration configuration = checkAndGetConfiguration(platform);
         assertThat(configuration.getPort()).as("Port is the one defined in the configuration").isEqualTo(reactPort);
     }
@@ -90,7 +80,7 @@ public class ReactPlatformTest extends AbstractPlatformTest<ReactPlatform> {
         String origin = "*";
         platformConfiguration.addProperty(ReactUtils.REACT_CLIENT_URL_KEY, origin);
         platform = new ReactPlatform();
-        platform.start(mockedXatkitCore, platformConfiguration);
+        platform.start(mockedXatkitBot, platformConfiguration);
         Configuration configuration = checkAndGetConfiguration(platform);
         /*
          * We need to translate wildcard origin into null, because of a non-intuitive behavior of netty-socketio, see

@@ -41,9 +41,9 @@ public class ReplyFileMessage extends Reply {
      */
     private static String computeMessage(RuntimePlatform platform, StateContext context, String baseMessage,
                                          File file) {
-        File uploadedFile = platform.getXatkitCore().getXatkitServer().createOrReplacePublicFile(context,
+        File uploadedFile = platform.getXatkitBot().getXatkitServer().createOrReplacePublicFile(context,
                 file.getName(), file);
-        String publicURL = platform.getXatkitCore().getXatkitServer().getPublicURL(uploadedFile);
+        String publicURL = platform.getXatkitBot().getXatkitServer().getPublicURL(uploadedFile);
         String fileName = uploadedFile.getName();
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
         if (IMG_EXTENSIONS.contains(extension.toLowerCase())) {

@@ -1,10 +1,9 @@
 package com.xatkit.plugins.react.platform.io;
 
 import com.xatkit.AbstractEventProviderTest;
-import com.xatkit.core.XatkitCore;
+import com.xatkit.core.XatkitBot;
 import com.xatkit.core.server.XatkitServer;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import org.apache.commons.configuration2.BaseConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,9 +21,9 @@ public class ReactIntentProviderTest extends AbstractEventProviderTest<ReactInte
         /*
          * Can't call super.setUp because we need to mock the XatkitServer before calling getPlatform.
          */
-        mockedXatkitCore = mock(XatkitCore.class);
+        mockedXatkitBot = mock(XatkitBot.class);
         mockedXatkitServer = mock(XatkitServer.class);
-        when(mockedXatkitCore.getXatkitServer()).thenReturn(mockedXatkitServer);
+        when(mockedXatkitBot.getXatkitServer()).thenReturn(mockedXatkitServer);
         platform = getPlatform();
     }
 

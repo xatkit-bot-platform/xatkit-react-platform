@@ -2,7 +2,7 @@ package com.xatkit.plugins.react.platform;
 
 import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.xatkit.core.XatkitCore;
+import com.xatkit.core.XatkitBot;
 import com.xatkit.core.platform.action.RuntimeActionResult;
 import com.xatkit.core.server.XatkitServerUtils;
 import com.xatkit.core.session.XatkitSession;
@@ -64,8 +64,8 @@ public class ReactPlatform extends ChatPlatform {
      * {@link XatkitServerUtils#SERVER_PUBLIC_URL_KEY} and {@link XatkitServerUtils#SERVER_PORT_KEY} properties.
      */
     @Override
-    public void start(@NonNull XatkitCore xatkitCore, @NonNull Configuration configuration) {
-        super.start(xatkitCore, configuration);
+    public void start(@NonNull XatkitBot xatkitBot, @NonNull Configuration configuration) {
+        super.start(xatkitBot, configuration);
         /*
          * Register the shutdown hook first to make sure it is registered even if the constructor throws an exception.
          */
@@ -123,7 +123,7 @@ public class ReactPlatform extends ChatPlatform {
         this.socketIOServer.startAsync();
 
         ReactRestEndpointsManager restEndpointsManager =
-                new ReactRestEndpointsManager(this.xatkitCore.getXatkitServer(), configuration);
+                new ReactRestEndpointsManager(this.xatkitBot.getXatkitServer(), configuration);
         restEndpointsManager.registerRestEndpoints();
     }
 
@@ -143,22 +143,6 @@ public class ReactPlatform extends ChatPlatform {
     }
 
     /**
-     * Formats the provided {@code list} into a markdown enumeration using the provided {@code formatterName}.
-     * <p>
-     * The selected formatter is used to compute a string representation of each list element.
-     *
-     * @param context       the current {@link StateContext}
-     * @param list          the {@link List} to format
-     * @param formatterName the name of the formatter to use
-     * @return the enumeration formatted in markdown
-     */
-    public String enumerateList(@NonNull StateContext context, @NonNull List<?> list, @Nullable String formatterName) {
-        EnumerateList action = new EnumerateList(this, context, list, formatterName);
-        RuntimeActionResult result = action.call();
-        return (String) result.getResult();
-    }
-
-    /**
      * Formats the provided {@code list} into a markdown item list.
      * <p>
      * This method accepts any {@link List} and relies on the {@code toString} implementation of its elements.
@@ -169,22 +153,6 @@ public class ReactPlatform extends ChatPlatform {
      */
     public String itemizeList(@NonNull StateContext context, @NonNull List<?> list) {
         ItemizeList action = new ItemizeList(this, context, list);
-        RuntimeActionResult result = action.call();
-        return (String) result.getResult();
-    }
-
-    /**
-     * Formats the provided {@code list} into a markdown item list using the provided {@code formatterName}.
-     * <p>
-     * The selected formatter is used to compute the string representation of each list element.
-     *
-     * @param context       the current {@link StateContext}
-     * @param list          the {@link List} to format
-     * @param formatterName the name of the formatter to use
-     * @return the item list formatted in markdown
-     */
-    public String itemizeList(@NonNull StateContext context, @NonNull List<?> list, @Nullable String formatterName) {
-        ItemizeList action = new ItemizeList(this, context, list, formatterName);
         RuntimeActionResult result = action.call();
         return (String) result.getResult();
     }
@@ -349,7 +317,7 @@ public class ReactPlatform extends ChatPlatform {
              */
             return null;
         }
-        return this.xatkitCore.getOrCreateContext(conversationId);
+        return this.xatkitBot.getOrCreateContext(conversationId);
     }
 
     /**
@@ -374,7 +342,7 @@ public class ReactPlatform extends ChatPlatform {
             conversationId = UUID.randomUUID().toString();
         }
         this.socketToConversationMap.put(socketId, conversationId);
-        return this.xatkitCore.getOrCreateContext(conversationId);
+        return this.xatkitBot.getOrCreateContext(conversationId);
     }
 
 }
