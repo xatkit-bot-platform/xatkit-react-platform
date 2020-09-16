@@ -105,7 +105,7 @@ public class PostMessage extends RuntimeMessageAction<ReactPlatform> {
     }
 
     @Override
-    protected StateContext getClientSession() {
+    protected StateContext getClientStateContext() {
         return this.runtimePlatform.getSessionForSocketId(channel);
     }
 }
