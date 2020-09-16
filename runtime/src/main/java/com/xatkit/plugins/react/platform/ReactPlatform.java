@@ -8,6 +8,7 @@ import com.xatkit.core.server.XatkitServerUtils;
 import com.xatkit.core.session.XatkitSession;
 import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
+import com.xatkit.plugins.chat.platform.io.ChatIntentProvider;
 import com.xatkit.plugins.react.platform.action.EnumerateList;
 import com.xatkit.plugins.react.platform.action.ItemizeList;
 import com.xatkit.plugins.react.platform.action.PostMessage;
@@ -56,6 +57,14 @@ public class ReactPlatform extends ChatPlatform {
      * when the client reloads the page).
      */
     private Map<String, String> socketToConversationMap = new HashMap<>();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ChatIntentProvider<? extends ChatPlatform> getChatIntentProvider() {
+        return this.getReactIntentProvider();
+    }
 
     /**
      * Initializes and returns a new {@link ReactEventProvider}.
