@@ -16,6 +16,8 @@ import com.xatkit.plugins.react.platform.action.ReplyFileMessage;
 import com.xatkit.plugins.react.platform.action.ReplyLinkSnippet;
 import com.xatkit.plugins.react.platform.action.ToggleDarkMode;
 import com.xatkit.plugins.react.platform.action.Wait;
+import com.xatkit.plugins.react.platform.io.ReactEventProvider;
+import com.xatkit.plugins.react.platform.io.ReactIntentProvider;
 import com.xatkit.plugins.react.platform.server.ReactRestEndpointsManager;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import fr.inria.atlanmod.commons.log.Log;
@@ -54,6 +56,24 @@ public class ReactPlatform extends ChatPlatform {
      * when the client reloads the page).
      */
     private Map<String, String> socketToConversationMap = new HashMap<>();
+
+    /**
+     * Initializes and returns a new {@link ReactEventProvider}.
+     *
+     * @return the {@link ReactEventProvider}
+     */
+    public ReactEventProvider getReactEventProvider() {
+        return new ReactEventProvider(this);
+    }
+
+    /**
+     * Initializes and returns a new {@link ReactIntentProvider}.
+     *
+     * @return the {@link ReactIntentProvider}
+     */
+    public ReactIntentProvider getReactIntentProvider() {
+        return new ReactIntentProvider(this);
+    }
 
     /**
      * {@inheritDoc}
@@ -337,7 +357,7 @@ public class ReactPlatform extends ChatPlatform {
      * @return the created {@link StateContext}
      */
     public @NonNull StateContext createSessionForConversation(@NonNull String socketId,
-                                                               @Nullable String conversationId) {
+                                                              @Nullable String conversationId) {
         if (isNull(conversationId)) {
             conversationId = UUID.randomUUID().toString();
         }
