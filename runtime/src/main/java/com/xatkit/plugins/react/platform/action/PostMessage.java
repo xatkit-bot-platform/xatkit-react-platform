@@ -1,7 +1,6 @@
 package com.xatkit.plugins.react.platform.action;
 
 import com.xatkit.core.platform.action.RuntimeMessageAction;
-import com.xatkit.core.session.XatkitSession;
 import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
@@ -16,8 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link RuntimeMessageAction} that posts a {@code message} to a given xatkit-react {@code channel}.
@@ -106,6 +103,6 @@ public class PostMessage extends RuntimeMessageAction<ReactPlatform> {
 
     @Override
     protected StateContext getClientStateContext() {
-        return this.runtimePlatform.getSessionForSocketId(channel);
+        return this.runtimePlatform.getStateContextForSocketId(channel);
     }
 }

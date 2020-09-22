@@ -1,10 +1,7 @@
 package com.xatkit.plugins.react.platform.io;
 
 import com.xatkit.core.platform.io.RuntimeEventProvider;
-import com.xatkit.core.session.XatkitSession;
 import com.xatkit.execution.StateContext;
-import com.xatkit.intent.Context;
-import com.xatkit.intent.ContextInstance;
 import com.xatkit.intent.ContextParameter;
 import com.xatkit.intent.ContextParameterValue;
 import com.xatkit.intent.EventDefinition;
@@ -61,12 +58,12 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                 (socketIOClient, initObject, ackRequest) -> {
                     String socketId = socketIOClient.getSessionId().toString();
 
-                    StateContext context = this.runtimePlatform.getSessionForSocketId(socketId);
+                    StateContext context = this.runtimePlatform.getStateContextForSocketId(socketId);
 
                     if (isNull(context)) {
                         String conversationId = initObject.getConversationId();
                         Log.debug("Client requested conversation {0}", conversationId);
-                        context = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
+                        context = this.runtimePlatform.createStateContextForConversation(socketId, conversationId);
                         context.setOrigin(initObject.getOrigin());
                         socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
                                 new InitConfirm(context.getContextId()));
@@ -75,43 +72,34 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                      * The session already exists, no need to send an ack event.
                      */
 
-                    Context chatContext = ClientReady.getOutContext(ChatUtils.CHAT_CONTEXT_KEY);
                     ContextParameter chatChannelParameter =
-                            chatContext.getContextParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
-                    Context reactContext = ClientReady.getOutContext(ReactUtils.REACT_CONTEXT_KEY);
+                            ClientReady.getParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
                     ContextParameter reactHostnameParameter =
-                            reactContext.getContextParameter(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY);
+                            ClientReady.getParameter(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY);
                     ContextParameter reactUrlParameter =
-                            reactContext.getContextParameter(ReactUtils.REACT_URL_CONTEXT_KEY);
+                            ClientReady.getParameter(ReactUtils.REACT_URL_CONTEXT_KEY);
                     ContextParameter reactOriginParameter =
-                            reactContext.getContextParameter(ReactUtils.REACT_ORIGIN_CONTEXT_KEY);
+                            ClientReady.getParameter(ReactUtils.REACT_ORIGIN_CONTEXT_KEY);
+
 
                     EventInstance eventInstance = IntentFactory.eINSTANCE.createEventInstance();
                     eventInstance.setDefinition(ClientReady);
-                    ContextInstance chatContextInstance = IntentFactory.eINSTANCE.createContextInstance();
-                    chatContextInstance.setDefinition(chatContext);
-                    chatContextInstance.setLifespanCount(chatContext.getLifeSpan());
-                    eventInstance.getOutContextInstances().add(chatContextInstance);
                     ContextParameterValue chatChannelValue = IntentFactory.eINSTANCE.createContextParameterValue();
                     chatChannelValue.setContextParameter(chatChannelParameter);
                     chatChannelValue.setValue(socketId);
-                    chatContextInstance.getValues().add(chatChannelValue);
-                    ContextInstance reactContextInstance = IntentFactory.eINSTANCE.createContextInstance();
-                    reactContextInstance.setDefinition(reactContext);
-                    reactContextInstance.setLifespanCount(reactContext.getLifeSpan());
-                    eventInstance.getOutContextInstances().add(reactContextInstance);
+                    eventInstance.getValues().add(chatChannelValue);
                     ContextParameterValue reactHostnameValue = IntentFactory.eINSTANCE.createContextParameterValue();
                     reactHostnameValue.setContextParameter(reactHostnameParameter);
                     reactHostnameValue.setValue(initObject.getHostname());
-                    reactContextInstance.getValues().add(reactHostnameValue);
+                    eventInstance.getValues().add(reactHostnameValue);
                     ContextParameterValue reactUrlValue = IntentFactory.eINSTANCE.createContextParameterValue();
                     reactUrlValue.setContextParameter(reactUrlParameter);
                     reactUrlValue.setValue(initObject.getUrl());
-                    reactContextInstance.getValues().add(reactUrlValue);
+                    eventInstance.getValues().add(reactUrlValue);
                     ContextParameterValue reactOriginValue = IntentFactory.eINSTANCE.createContextParameterValue();
                     reactOriginValue.setContextParameter(reactOriginParameter);
                     reactOriginValue.setValue(initObject.getOrigin());
-                    reactContextInstance.getValues().add(reactOriginValue);
+                    eventInstance.getValues().add(reactOriginValue);
 
                     this.sendEventInstance(eventInstance, context);
 
@@ -122,21 +110,16 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
          */
         this.runtimePlatform.getSocketIOServer().addDisconnectListener(socketIOClient -> {
             String channel = socketIOClient.getSessionId().toString();
-            StateContext context = this.runtimePlatform.getSessionForSocketId(channel);
+            StateContext context = this.runtimePlatform.getStateContextForSocketId(channel);
 
-            Context chatContext = ClientClosed.getOutContext(ChatUtils.CHAT_CONTEXT_KEY);
-            ContextParameter chatChannelParameter = chatContext.getContextParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
+            ContextParameter chatChannelParameter = ClientClosed.getParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
 
             EventInstance eventInstance = IntentFactory.eINSTANCE.createEventInstance();
             eventInstance.setDefinition(ClientClosed);
-            ContextInstance chatContextInstance = IntentFactory.eINSTANCE.createContextInstance();
-            chatContextInstance.setDefinition(chatContext);
-            chatContextInstance.setLifespanCount(chatContext.getLifeSpan());
-            eventInstance.getOutContextInstances().add(chatContextInstance);
             ContextParameterValue chatChannelValue = IntentFactory.eINSTANCE.createContextParameterValue();
             chatChannelValue.setContextParameter(chatChannelParameter);
             chatChannelValue.setValue(channel);
-            chatContextInstance.getValues().add(chatChannelValue);
+            eventInstance.getValues().add(chatChannelValue);
 
             this.sendEventInstance(eventInstance, context);
         });
@@ -156,11 +139,7 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
      * The {@link EventDefinition} that is fired when a client connects to the widget.
      */
     public static EventDefinition ClientReady = event("Client_Ready")
-            .context(ChatUtils.CHAT_CONTEXT_KEY)
-            .lifespan(1)
             .parameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
-            .context(ReactUtils.REACT_CONTEXT_KEY)
-            .lifespan(1)
             .parameter(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY)
             .parameter(ReactUtils.REACT_URL_CONTEXT_KEY)
             .parameter(ReactUtils.REACT_ORIGIN_CONTEXT_KEY)
@@ -170,8 +149,6 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
      * The {@link EventDefinition} that is fired when a client connection is closed.
      */
     public static EventDefinition ClientClosed = event("Client_Closed")
-            .context(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
-            .lifespan(1)
             .parameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
             .getEventDefinition();
 }

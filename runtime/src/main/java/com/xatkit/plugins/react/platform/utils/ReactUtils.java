@@ -1,6 +1,5 @@
 package com.xatkit.plugins.react.platform.utils;
 
-import com.xatkit.core.session.RuntimeContexts;
 import com.xatkit.plugins.chat.ChatUtils;
 
 /**
@@ -63,22 +62,22 @@ public interface ReactUtils extends ChatUtils {
     boolean DEFAULT_REACT_ENABLE_TESTING_PAGE = true;
 
     /**
-     * The {@link RuntimeContexts} key used to store React-related information.
+     * The name of the platform data entry used to store React-related information.
      */
     String REACT_CONTEXT_KEY = "react";
 
     /**
-     * The {@link RuntimeContexts} key used to store the React hostname information.
+     * The name of the platform data entry used to store the React hostname information.
      */
-    String REACT_HOSTNAME_CONTEXT_KEY = "hostname";
+    String REACT_HOSTNAME_CONTEXT_KEY = REACT_CONTEXT_KEY + ".hostname";
 
     /**
-     * The {@link RuntimeContexts} key used to store the React url information.
+     * The name of the platform data entry used to store the React url information.
      */
-    String REACT_URL_CONTEXT_KEY = "url";
+    String REACT_URL_CONTEXT_KEY = REACT_CONTEXT_KEY + ".url";
 
     /**
-     * The {@link RuntimeContexts} key used to store the React origin information.
+     * The name of the platform data entry used to store the React origin information.
      */
-    String REACT_ORIGIN_CONTEXT_KEY = "origin";
+    String REACT_ORIGIN_CONTEXT_KEY = REACT_CONTEXT_KEY + ".origin";
 }

@@ -1,12 +1,10 @@
 package com.xatkit.plugins.react.platform.action;
 
 import com.xatkit.core.platform.action.RuntimeMessageAction;
-import com.xatkit.core.session.RuntimeContexts;
-import com.xatkit.core.session.XatkitSession;
 import com.xatkit.execution.StateContext;
+import com.xatkit.intent.EventInstance;
 import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.react.platform.ReactPlatform;
-import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import lombok.NonNull;
 
 import java.util.Collections;
@@ -18,29 +16,29 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 /**
  * A {@link RuntimeMessageAction} that replies to a message using the input xatkit-react channel.
  * <p>
- * This action relies on the provided {@link XatkitSession} to retrieve the xatkit-react {@code channel} associated
- * to the user input.
+ * This action relies on the provided {@link StateContext} to retrieve the {@code channel} associated to the user
+ * input (i.e. the socket connection identifier).
  *
  * @see PostMessage
  */
 public class Reply extends PostMessage {
 
     /**
-     * Returns the xatkit-react channel associated to the user input.
+     * Returns the channel associated to the user input.
      * <p>
-     * This method searches in the provided {@link RuntimeContexts} for the value stored with the key
-     * {@link ReactUtils#REACT_CONTEXT_KEY}.{@link ReactUtils#CHAT_CHANNEL_CONTEXT_KEY}. Note that if the provided
-     * {@link RuntimeContexts} does not contain the requested value a {@link NullPointerException} is thrown.
+     * This method searches for the value stored with the key {@link ChatUtils#CHAT_CHANNEL_CONTEXT_KEY} key in the
+     * platform data of the current {@link EventInstance}.
      *
-     * @param context the {@link StateContext} to retrieve the xatkit-react channel from
-     * @return the xatkit-react channel associated to the user input
+     * @param context the {@link StateContext} to retrieve the channel from
+     * @return the channel associated to the user input
      * @throws NullPointerException     if the provided {@code context} is {@code null}, or if it does not contain the
      *                                  channel information
      * @throws IllegalArgumentException if the retrieved channel is not a {@link String}
+     * @see StateContext#getEventInstance()
+     * @see EventInstance#getPlatformData()
      */
     public static String getChannel(@NonNull StateContext context) {
-        Object channelValue = context.getNlpContext().getOrDefault(ChatUtils.CHAT_CONTEXT_KEY,
-                Collections.emptyMap()).get(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
+        Object channelValue = context.getEventInstance().getPlatformData().get(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
         checkNotNull(channelValue, "Cannot retrieve the React channel from the context, expected a non null " +
                 ChatUtils.CHAT_CHANNEL_CONTEXT_KEY + " value, found %s", channelValue);
         checkArgument(channelValue instanceof String, "Invalid React channel type, expected %s, found %s",

@@ -1,10 +1,9 @@
 package com.xatkit.plugins.react.platform.io;
 
 import com.xatkit.core.platform.io.IntentRecognitionHelper;
-import com.xatkit.core.session.XatkitSession;
 import com.xatkit.execution.StateContext;
+import com.xatkit.intent.EventInstance;
 import com.xatkit.intent.RecognizedIntent;
-import com.xatkit.plugins.chat.ChatUtils;
 import com.xatkit.plugins.chat.platform.io.ChatIntentProvider;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import com.xatkit.plugins.react.platform.socket.SocketEventTypes;
@@ -50,10 +49,10 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     String username = messageObject.getUsername();
                     String channel = socketIOClient.getSessionId().toString();
                     String rawMessage = messageObject.getMessage();
-                    StateContext context = this.getRuntimePlatform().getSessionForSocketId(channel);
+                    StateContext context = this.getRuntimePlatform().getStateContextForSocketId(channel);
                     RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(rawMessage,
                             context, this.getRuntimePlatform().getXatkitBot());
-                    setSessionContexts(context, username, channel, rawMessage);
+                    setEventParameterValues(recognizedIntent, username, channel, rawMessage);
                     this.sendEventInstance(recognizedIntent, context);
                 });
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.USER_BUTTON_CLICK.label,
@@ -63,20 +62,20 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
                     String username = quickButtonEventObject.getUsername();
                     String channel = socketIOClient.getSessionId().toString();
                     String rawMessage = quickButtonEventObject.getSelectedValue();
-                    StateContext context = this.getRuntimePlatform().getSessionForSocketId(channel);
+                    StateContext context = this.getRuntimePlatform().getStateContextForSocketId(channel);
                     RecognizedIntent recognizedIntent = IntentRecognitionHelper.getRecognizedIntent(rawMessage,
                             context, this.getRuntimePlatform().getXatkitBot());
-                    setSessionContexts(context, username, channel, rawMessage);
+                    setEventParameterValues(recognizedIntent, username, channel, rawMessage);
                     this.sendEventInstance(recognizedIntent, context);
                 }));
         this.runtimePlatform.getSocketIOServer().addEventListener(SocketEventTypes.INIT.label, Init.class,
                 (socketIOClient, initObject, ackRequest) -> {
                     String socketId = socketIOClient.getSessionId().toString();
-                    StateContext context = this.runtimePlatform.getSessionForSocketId(socketId);
+                    StateContext context = this.runtimePlatform.getStateContextForSocketId(socketId);
                     if (isNull(context)) {
                         String conversationId = initObject.getConversationId();
                         Log.debug("Client requested conversation {0}", conversationId);
-                        context = this.runtimePlatform.createSessionForConversation(socketId, conversationId);
+                        context = this.runtimePlatform.createStateContextForConversation(socketId, conversationId);
                         context.setOrigin(initObject.getOrigin());
                         socketIOClient.sendEvent(SocketEventTypes.INIT_CONFIRM.label,
                                 new InitConfirm(context.getContextId()));
@@ -88,37 +87,18 @@ public class ReactIntentProvider extends ChatIntentProvider<ReactPlatform> {
     }
 
     /**
-     * Sets the {@code session}'s context and context parameter from the provided {@code username}, {@code channel},
-     * and {@code rawMessage}.
-     * <p>
-     * This method sets both the {@code react} context parameters (from {@link ReactUtils}) and the {@code chat} one
-     * (from {@link ChatUtils}).
+     * Sets the {@code event's} platform data entries for the provided {@code username}, {@code channel}, and
+     * {@code rawMessage}.
      *
-     * @param context    the {@link StateContext} to set the contexts of
+     * @param event    the {@link EventInstance} to set the platform data entries of
      * @param username   the username value to set in the session
      * @param channel    the channel value to set in the session
      * @param rawMessage the raw message value to set in the session
      */
-    private void setSessionContexts(StateContext context, String username, String channel, String rawMessage) {
-        /*
-         * TODO remove this cast, this method should handle any StateContext.
-         */
-        XatkitSession session = (XatkitSession) context;
-        session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                ReactUtils.CHAT_USERNAME_CONTEXT_KEY, username);
-        session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                ReactUtils.CHAT_CHANNEL_CONTEXT_KEY, channel);
-        session.getRuntimeContexts().setContextValue(ReactUtils.REACT_CONTEXT_KEY, 1,
-                ReactUtils.CHAT_RAW_MESSAGE_CONTEXT_KEY, rawMessage);
-        /*
-         * This provider extends ChatIntentProvider, and must set chat-related context values.
-         */
-        session.getRuntimeContexts().setContextValue(ChatUtils.CHAT_CONTEXT_KEY, 1,
-                ChatUtils.CHAT_USERNAME_CONTEXT_KEY, username);
-        session.getRuntimeContexts().setContextValue(ChatUtils.CHAT_CONTEXT_KEY, 1,
-                ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, channel);
-        session.getRuntimeContexts().setContextValue(ChatUtils.CHAT_CONTEXT_KEY, 1,
-                ChatUtils.CHAT_RAW_MESSAGE_CONTEXT_KEY, rawMessage);
+    private void setEventParameterValues(EventInstance event, String username, String channel, String rawMessage) {
+        event.getPlatformData().put(ReactUtils.CHAT_USERNAME_CONTEXT_KEY, username);
+        event.getPlatformData().put(ReactUtils.CHAT_CHANNEL_CONTEXT_KEY, channel);
+        event.getPlatformData().put(ReactUtils.CHAT_RAW_MESSAGE_CONTEXT_KEY, rawMessage);
     }
 
     /**

@@ -5,7 +5,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.xatkit.core.XatkitBot;
 import com.xatkit.core.platform.action.RuntimeActionResult;
 import com.xatkit.core.server.XatkitServerUtils;
-import com.xatkit.core.session.XatkitSession;
 import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
 import com.xatkit.plugins.chat.platform.io.ChatIntentProvider;
@@ -328,15 +327,15 @@ public class ReactPlatform extends ChatPlatform {
      * Retrieves the {@link StateContext} associated to the provided {@code socketId}.
      * <p>
      * This method looks for an existing <i>conversation ID</i> associated to the provided {@code socketId} and
-     * returns the corresponding {@link XatkitSession} if it exists, or {@code null} if it cannot be found.
+     * returns the corresponding {@link StateContext} if it exists, or {@code null} if it cannot be found.
      *
-     * @param socketId the socketId to create a {@link XatkitSession} from
-     * @return the retrieved {@link XatkitSession}, or {@code null} if it cannot be found
-     * @see #createSessionForConversation(String, String) to create a {@link XatkitSession} for a given {@code
+     * @param socketId the socketId to create a {@link StateContext} from
+     * @return the retrieved {@link StateContext}, or {@code null} if it cannot be found
+     * @see #createStateContextForConversation(String, String) to create a {@link StateContext} for a given {@code
      * sessionId} and {@code conversationId}.
      */
     public @Nullable
-    StateContext getSessionForSocketId(@NonNull String socketId) {
+    StateContext getStateContextForSocketId(@NonNull String socketId) {
         String conversationId = this.socketToConversationMap.get(socketId);
         if (isNull(conversationId)) {
             /*
@@ -365,8 +364,8 @@ public class ReactPlatform extends ChatPlatform {
      * @param conversationId the identifier of the conversation to create a session for
      * @return the created {@link StateContext}
      */
-    public @NonNull StateContext createSessionForConversation(@NonNull String socketId,
-                                                              @Nullable String conversationId) {
+    public @NonNull StateContext createStateContextForConversation(@NonNull String socketId,
+                                                                   @Nullable String conversationId) {
         if (isNull(conversationId)) {
             conversationId = UUID.randomUUID().toString();
         }

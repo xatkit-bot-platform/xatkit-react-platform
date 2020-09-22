@@ -1,7 +1,6 @@
 package com.xatkit.plugins.react.platform.action;
 
 import com.xatkit.core.platform.action.RuntimeAction;
-import com.xatkit.core.session.XatkitSession;
 import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.react.platform.ReactPlatform;
 import fr.inria.atlanmod.commons.log.Log;
