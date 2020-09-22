@@ -26,7 +26,7 @@ public class Reply extends PostMessage {
     /**
      * Returns the channel associated to the user input.
      * <p>
-     * This method searches for the value stored with the key {@link ChatUtils#CHAT_CHANNEL_CONTEXT_KEY} key in the
+     * This method searches for the value stored with the {@link ChatUtils#CHAT_CHANNEL_CONTEXT_KEY} key in the
      * platform data of the current {@link EventInstance}.
      *
      * @param context the {@link StateContext} to retrieve the channel from
