@@ -71,36 +71,13 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
                     /*
                      * The session already exists, no need to send an ack event.
                      */
-
-                    ContextParameter chatChannelParameter =
-                            ClientReady.getParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
-                    ContextParameter reactHostnameParameter =
-                            ClientReady.getParameter(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY);
-                    ContextParameter reactUrlParameter =
-                            ClientReady.getParameter(ReactUtils.REACT_URL_CONTEXT_KEY);
-                    ContextParameter reactOriginParameter =
-                            ClientReady.getParameter(ReactUtils.REACT_ORIGIN_CONTEXT_KEY);
-
-
                     EventInstance eventInstance = IntentFactory.eINSTANCE.createEventInstance();
                     eventInstance.setDefinition(ClientReady);
-                    ContextParameterValue chatChannelValue = IntentFactory.eINSTANCE.createContextParameterValue();
-                    chatChannelValue.setContextParameter(chatChannelParameter);
-                    chatChannelValue.setValue(socketId);
-                    eventInstance.getValues().add(chatChannelValue);
-                    ContextParameterValue reactHostnameValue = IntentFactory.eINSTANCE.createContextParameterValue();
-                    reactHostnameValue.setContextParameter(reactHostnameParameter);
-                    reactHostnameValue.setValue(initObject.getHostname());
-                    eventInstance.getValues().add(reactHostnameValue);
-                    ContextParameterValue reactUrlValue = IntentFactory.eINSTANCE.createContextParameterValue();
-                    reactUrlValue.setContextParameter(reactUrlParameter);
-                    reactUrlValue.setValue(initObject.getUrl());
-                    eventInstance.getValues().add(reactUrlValue);
-                    ContextParameterValue reactOriginValue = IntentFactory.eINSTANCE.createContextParameterValue();
-                    reactOriginValue.setContextParameter(reactOriginParameter);
-                    reactOriginValue.setValue(initObject.getOrigin());
-                    eventInstance.getValues().add(reactOriginValue);
-
+                    eventInstance.getPlatformData().put(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, socketId);
+                    eventInstance.getPlatformData().put(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY,
+                            initObject.getHostname());
+                    eventInstance.getPlatformData().put(ReactUtils.REACT_URL_CONTEXT_KEY, initObject.getUrl());
+                    eventInstance.getPlatformData().put(ReactUtils.REACT_ORIGIN_CONTEXT_KEY, initObject.getOrigin());
                     this.sendEventInstance(eventInstance, context);
 
                 });
@@ -111,16 +88,9 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
         this.runtimePlatform.getSocketIOServer().addDisconnectListener(socketIOClient -> {
             String channel = socketIOClient.getSessionId().toString();
             StateContext context = this.runtimePlatform.getStateContextForSocketId(channel);
-
-            ContextParameter chatChannelParameter = ClientClosed.getParameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY);
-
             EventInstance eventInstance = IntentFactory.eINSTANCE.createEventInstance();
             eventInstance.setDefinition(ClientClosed);
-            ContextParameterValue chatChannelValue = IntentFactory.eINSTANCE.createContextParameterValue();
-            chatChannelValue.setContextParameter(chatChannelParameter);
-            chatChannelValue.setValue(channel);
-            eventInstance.getValues().add(chatChannelValue);
-
+            eventInstance.getPlatformData().put(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY, channel);
             this.sendEventInstance(eventInstance, context);
         });
     }
@@ -139,16 +109,11 @@ public class ReactEventProvider extends RuntimeEventProvider<ReactPlatform> {
      * The {@link EventDefinition} that is fired when a client connects to the widget.
      */
     public static EventDefinition ClientReady = event("Client_Ready")
-            .parameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
-            .parameter(ReactUtils.REACT_HOSTNAME_CONTEXT_KEY)
-            .parameter(ReactUtils.REACT_URL_CONTEXT_KEY)
-            .parameter(ReactUtils.REACT_ORIGIN_CONTEXT_KEY)
             .getEventDefinition();
 
     /**
      * The {@link EventDefinition} that is fired when a client connection is closed.
      */
     public static EventDefinition ClientClosed = event("Client_Closed")
-            .parameter(ChatUtils.CHAT_CHANNEL_CONTEXT_KEY)
             .getEventDefinition();
 }
