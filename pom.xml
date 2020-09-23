@@ -47,7 +47,7 @@
 
         <dependency>
             <groupId>com.xatkit</groupId>
-            <artifactId>chat-platform-runtime</artifactId>
+            <artifactId>chat-platform</artifactId>
             <version>3.0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
