@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Utility class for message formatting.
  */
-public class MessageUtils {
+public final class MessageUtils {
 
     /**
      * The markdown code to create a new line.
@@ -98,5 +98,12 @@ public class MessageUtils {
                     .append("  \n");
         }
         return sb.toString();
+    }
+
+    /**
+     * Disable constructor, this is an utility class.
+     */
+    private MessageUtils() {
+
     }
 }
