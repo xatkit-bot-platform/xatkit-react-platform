@@ -3,9 +3,9 @@ package com.xatkit.plugins.react.platform.action;
 import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.chat.platform.action.FormatList;
 import com.xatkit.plugins.react.platform.ReactPlatform;
+import com.xatkit.plugins.react.platform.utils.MessageUtils;
 import lombok.NonNull;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -15,7 +15,10 @@ import java.util.List;
  * key, allowing to retrieve and manipulate it in custom actions.
  * <p>
  * This action supports any kind of {@link List}, and calls the {@link Object#toString()} method on each object.
+ * <p>
+ * <b>Deprecated</b>: use {@link MessageUtils#enumerateList(List)}.
  */
+@Deprecated
 public class EnumerateList extends FormatList<ReactPlatform> {
 
     /**
@@ -33,19 +36,13 @@ public class EnumerateList extends FormatList<ReactPlatform> {
      * Formats the provided {@link List} into an enumeration.
      * <p>
      * Each item is represented with the following pattern: {@code "[index] item.toString()\n"}.
+     * <b>Deprecated</b>: see {@link MessageUtils#enumerateList(List)}.
      *
      * @return the formatted {@link String}
      */
+    @Deprecated
     @Override
     protected Object formatList() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < list.size(); i++) {
-            sb.append("[")
-                    .append(i)
-                    .append("] ")
-                    .append(list.get(i).toString())
-                    .append("  \n");
-        }
-        return sb.toString();
+        return MessageUtils.enumerateList(this.list);
     }
 }

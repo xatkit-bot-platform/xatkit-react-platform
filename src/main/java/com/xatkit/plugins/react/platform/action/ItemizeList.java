@@ -3,11 +3,10 @@ package com.xatkit.plugins.react.platform.action;
 import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.chat.platform.action.FormatList;
 import com.xatkit.plugins.react.platform.ReactPlatform;
+import com.xatkit.plugins.react.platform.utils.MessageUtils;
 import lombok.NonNull;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Formats the provided {@link List} into a set of items that can be embedded in React messages.
@@ -16,7 +15,10 @@ import java.util.stream.Collectors;
  * key, allowing to retrieve and manipulate it in custom actions.
  * <p>
  * This action supports any kind of {@link List}, and call the {@link Object#toString()} method on each object.
+ * <p>
+ * <b>Deprecated</b>: use {@link MessageUtils#itemizeList(List)}.
  */
+@Deprecated
 public class ItemizeList extends FormatList<ReactPlatform> {
 
     /**
@@ -34,18 +36,13 @@ public class ItemizeList extends FormatList<ReactPlatform> {
      * Formats the provided {@link List} into a set of items.
      * <p>
      * Each item is represented with the following pattern: {@code "- item.toString()\n"}.
+     * <b>Deprecated</b>: see {@link MessageUtils#itemizeList(List)}.
      *
      * @return the formatted {@link String}
      */
+    @Deprecated
     @Override
     protected Object formatList() {
-        if (list.isEmpty()) {
-            return "";
-        } else {
-            return "- " + String.join("  \n- ",
-                    list.stream().map(Object::toString)
-                            .collect(Collectors.toList())) +
-                    "  \n";
-        }
+        return MessageUtils.itemizeList(this.list);
     }
 }

@@ -8,8 +8,6 @@ import com.xatkit.core.server.XatkitServerUtils;
 import com.xatkit.execution.StateContext;
 import com.xatkit.plugins.chat.platform.ChatPlatform;
 import com.xatkit.plugins.chat.platform.io.ChatIntentProvider;
-import com.xatkit.plugins.react.platform.action.EnumerateList;
-import com.xatkit.plugins.react.platform.action.ItemizeList;
 import com.xatkit.plugins.react.platform.action.PostMessage;
 import com.xatkit.plugins.react.platform.action.Reply;
 import com.xatkit.plugins.react.platform.action.ReplyFileMessage;
@@ -19,6 +17,7 @@ import com.xatkit.plugins.react.platform.action.Wait;
 import com.xatkit.plugins.react.platform.io.ReactEventProvider;
 import com.xatkit.plugins.react.platform.io.ReactIntentProvider;
 import com.xatkit.plugins.react.platform.server.ReactRestEndpointsManager;
+import com.xatkit.plugins.react.platform.utils.MessageUtils;
 import com.xatkit.plugins.react.platform.utils.ReactUtils;
 import fr.inria.atlanmod.commons.log.Log;
 import lombok.NonNull;
@@ -159,30 +158,30 @@ public class ReactPlatform extends ChatPlatform {
      * Formats the provided {@code list} into a markdown enumeration.
      * <p>
      * This method accepts any {@link List} and relies on the {@code toString} implementation of its elements.
-     *
+     * <p>
+     * <b>Deprecated</b>: use {@link MessageUtils#enumerateList(List)}.
      * @param context the current {@link StateContext}
      * @param list    the {@link List} to format
      * @return the enumeration formatted in markdown
      */
+    @Deprecated
     public String enumerateList(@NonNull StateContext context, @NonNull List<?> list) {
-        EnumerateList action = new EnumerateList(this, context, list);
-        RuntimeActionResult result = action.call();
-        return (String) result.getResult();
+        return MessageUtils.enumerateList(list);
     }
 
     /**
      * Formats the provided {@code list} into a markdown item list.
      * <p>
      * This method accepts any {@link List} and relies on the {@code toString} implementation of its elements.
-     *
+     * <p>
+     * <b>Deprecated</b>: use {@link MessageUtils#itemizeList(List)}.
      * @param context the current {@link StateContext}
      * @param list    the {@link List} to format
      * @return the item list formatted in markdown
      */
+    @Deprecated
     public String itemizeList(@NonNull StateContext context, @NonNull List<?> list) {
-        ItemizeList action = new ItemizeList(this, context, list);
-        RuntimeActionResult result = action.call();
-        return (String) result.getResult();
+        return MessageUtils.itemizeList(list);
     }
 
     /**

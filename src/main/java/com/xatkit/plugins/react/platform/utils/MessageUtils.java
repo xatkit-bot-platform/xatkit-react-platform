@@ -3,6 +3,8 @@ package com.xatkit.plugins.react.platform.utils;
 import lombok.NonNull;
 
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for message formatting.
@@ -45,5 +47,56 @@ public class MessageUtils {
      */
     public static String eventLink(@NonNull String name, @NonNull String value) {
         return MessageFormat.format("[{0}](##{1})", name, value.replaceAll(" ", "-"));
+    }
+
+
+    /**
+     * Creates a string from the provided {@code list} that is rendered as a bullet list in the client widget.
+     * <p>
+     * Each element of the provided {@code list} is rendered with the following markdown pattern: {@code "- item
+     * .toString()\n"}.
+     * <p>
+     * Non-string elements are rendered using {@link Object#toString()}.
+     * <p>
+     * Empty {@code list} is rendered as an empty string.
+     *
+     * @param list the list of elements to render as a bullet list
+     * @return the string representing the bullet list
+     * @throws NullPointerException if the provided {@code list} is {@code null}
+     */
+    public static String itemizeList(@NonNull List<?> list) {
+        if (list.isEmpty()) {
+            return "";
+        } else {
+            return "- " + list.stream().map(Object::toString)
+                    .collect(Collectors.joining("  \n- "))
+                    + "  \n";
+        }
+    }
+
+    /**
+     * Creates a string from the provided {@code list} that is rendered as an enumeration in the client widget.
+     * <p>
+     * Each element of the provided {@code list} is rendered with the following markdown pattern: {@code "[index] item
+     * .toString()\n"}.
+     * <p>
+     * Non-string elements are rendered using {@link Object#toString()}.
+     * <p>
+     * Empty {@code list} is rendered as an empty string.
+     *
+     * @param list the list of elements to render as an enumeration
+     * @return the string representing the enumeration
+     * @throws NullPointerException if the provided {@code list} is {@code null}
+     */
+    public static String enumerateList(@NonNull List<?> list) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            sb.append("[")
+                    .append(i)
+                    .append("] ")
+                    .append(list.get(i).toString())
+                    .append("  \n");
+        }
+        return sb.toString();
     }
 }
