@@ -13,6 +13,8 @@ public enum SocketEventTypes {
      * A link snippet with preview image sent by the bot.
      */
     LINK_SNIPPET("link_snippet_with_img"),
+
+    AUDIO("audio"),
     /**
      * A message sent by the user.
      */

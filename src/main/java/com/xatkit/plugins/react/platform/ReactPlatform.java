@@ -10,6 +10,7 @@ import com.xatkit.plugins.chat.platform.ChatPlatform;
 import com.xatkit.plugins.chat.platform.io.ChatIntentProvider;
 import com.xatkit.plugins.react.platform.action.PostMessage;
 import com.xatkit.plugins.react.platform.action.Reply;
+import com.xatkit.plugins.react.platform.action.ReplyAudio;
 import com.xatkit.plugins.react.platform.action.ReplyFileMessage;
 import com.xatkit.plugins.react.platform.action.ReplyLinkSnippet;
 import com.xatkit.plugins.react.platform.action.ToggleDarkMode;
@@ -275,6 +276,11 @@ public class ReactPlatform extends ChatPlatform {
     public void replyLinkSnippet(@NonNull StateContext context, @NonNull String title, @NonNull String link,
                                  @NonNull String img) {
         ReplyLinkSnippet action = new ReplyLinkSnippet(this, context, title, link, img);
+        RuntimeActionResult result = action.call();
+    }
+
+    public void replyAudio(@NonNull StateContext context, @NonNull String src) {
+        ReplyAudio action = new ReplyAudio(this, context, src);
         RuntimeActionResult result = action.call();
     }
 
