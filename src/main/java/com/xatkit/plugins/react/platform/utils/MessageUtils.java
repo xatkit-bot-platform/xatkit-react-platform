@@ -2,6 +2,9 @@ package com.xatkit.plugins.react.platform.utils;
 
 import lombok.NonNull;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +49,11 @@ public final class MessageUtils {
      * @return the string representing the event link
      */
     public static String eventLink(@NonNull String name, @NonNull String value) {
-        return MessageFormat.format("[{0}](##{1})", name, value.replaceAll(" ", "-"));
+        try {
+            return MessageFormat.format("[{0}](##{1})", name, URLEncoder.encode(value, StandardCharsets.UTF_8.toString()));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
