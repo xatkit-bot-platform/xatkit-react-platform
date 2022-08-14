@@ -81,3 +81,15 @@ The React platform supports the following configuration options
 ```properties
 xatkit.platforms.abstract.ChatPlatform = com.xatkit.plugins.react.platform.ReactPlatform
 ```
+
+## Installing and using the React platform
+
+The [GreetingsBot](https://github.com/xatkit-bot-platform/xatkit-examples/tree/master/GreetingsBots/GreetingsBot) is an example of a bot using this platform.    
+
+Make sure also to include this dependency to your pom.
+
+        <dependency>
+            <groupId>com.xatkit</groupId>
+            <artifactId>react-platform</artifactId>
+            <version>4.0.1-SNAPSHOT</version>
+        </dependency>
